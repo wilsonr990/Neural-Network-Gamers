@@ -8,6 +8,7 @@ import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 
 import neuralNetwork.NeuralNet;
 import neuralNetwork.Stage;
@@ -47,10 +48,11 @@ public class Snake {
 	public float hue;
 	public double deathFade = 180;
 	public double health;
+    static Random random = new Random(System.currentTimeMillis());
 
 	/**
 	 * Initializes a new snake with given DNA
-	 * 
+	 *
 	 * @param dna
 	 *            if null, it generates a random new DNA
 	 * @param world
@@ -58,14 +60,16 @@ public class Snake {
 	 */
 
 	public Snake(DNA dna, World world) {
-		double x = Math.random() * (world.width - 2 * wallCollisionThreshold - 2 * GameLoop.globalCircleRadius) + wallCollisionThreshold
+        random.setSeed(random.nextLong());
+		double x = random.nextDouble() * (world.width - 2 * wallCollisionThreshold - 2 * GameLoop.globalCircleRadius) + wallCollisionThreshold
 				+ GameLoop.globalCircleRadius;
-		double y = Math.random() * (world.height - 2 * wallCollisionThreshold - 2 * GameLoop.globalCircleRadius) + wallCollisionThreshold
+        random.setSeed(random.nextLong());
+		double y = random.nextDouble() * (world.height - 2 * wallCollisionThreshold - 2 * GameLoop.globalCircleRadius) + wallCollisionThreshold
 				+ GameLoop.globalCircleRadius;
 
 		int dnalength = NeuralNet.calcNumberOfCoeffs(stageSizes, isNNSymmetric) + 1;
 		if (dna == null) {
-			this.dna = new DNA(true, dnalength);
+			this.dna = new DNA(false, dnalength);
 		} else {
 			this.dna = dna;
 		}
@@ -97,7 +101,7 @@ public class Snake {
 
 	/**
 	 * Movement, aging and collisions
-	 * 
+	 *
 	 * @param world
 	 *            reference to the world
 	 * @return true when snake died that round.
@@ -145,7 +149,7 @@ public class Snake {
 			} else {
 				c.followStatic(previous);
 			}
-			
+
 			c.updatePosition();
 			for (int j = 0; j < i; j++) {
 				c.collideStatic(snakeSegments.get(j));
@@ -186,7 +190,7 @@ public class Snake {
 
 	/**
 	 * Fitness function
-	 * 
+	 *
 	 * @return a value representing the fitness of the snake
 	 */
 	public double getFitness() {
@@ -207,7 +211,7 @@ public class Snake {
 
 	/**
 	 * Main calculation
-	 * 
+	 *
 	 * @param world
 	 *            reference to the world for environment information
 	 * @return angle increment to move
@@ -270,7 +274,7 @@ public class Snake {
 	 * of closest objects seen by each visual cell This function replaces those
 	 * by "Things" closer to the head of the snake Objects further away or
 	 * outside the FOV are ignored
-	 * 
+	 *
 	 * @param input
 	 *            Array of the current things seen by the snake
 	 * @param objects
@@ -303,7 +307,7 @@ public class Snake {
 
 	/**
 	 * Draws the snake to Graphics
-	 * 
+	 *
 	 * @param g
 	 *            Graphics object to draw to
 	 */
