@@ -1,4 +1,4 @@
-import gameEngine.GameLoop;
+import gameEngine.EngineLoop;
 import games.Game;
 import games.snake.SnakeGame;
 
@@ -15,7 +15,7 @@ public class MainWindow{
 	public MainWindow() {
 		Game snakeGame = new SnakeGame();
 
-		GameLoop loop = new GameLoop(snakeGame);
+		EngineLoop loop = new EngineLoop(snakeGame);
 		loop.start();
 	}
 

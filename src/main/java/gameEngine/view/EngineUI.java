@@ -1,17 +1,17 @@
 package gameEngine.view;
 
-import gameEngine.GameLoop;
+import gameEngine.EngineLoop;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class EngineUI extends JFrame{
-    private GameLoop gameLoop;  //TODO: delete this dependency
+    private EngineLoop engineLoop;  //TODO: delete this dependency
     private Component mainComponent;
 
-    public EngineUI(GameLoop gameLoop){
-        this.gameLoop = gameLoop;
-        mainComponent = new MainComponent(this.gameLoop, this.gameLoop.getGame().getWorld());
+    public EngineUI(EngineLoop engineLoop){
+        this.engineLoop = engineLoop;
+        mainComponent = new MainComponent(this.engineLoop, this.engineLoop.getGame().getWorld());
 
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setSize( 1000, 600);

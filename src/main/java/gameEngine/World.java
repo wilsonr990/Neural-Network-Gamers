@@ -27,7 +27,7 @@ public class World implements GameInterface{
 		for (int i = 0; i < n; i++) {
 			if (nibbles.size() >= maxNibbles)
 				break;
-			PhysicalCircle nibble = new PhysicalCircle(0, 0, GameLoop.globalCircleRadius);
+			PhysicalCircle nibble = new PhysicalCircle(0, 0, EngineLoop.globalCircleRadius);
 			nibble.x = Math.random() * (width - 2 * nibble.rad) + nibble.rad;
 			nibble.y = Math.random() * (height - 2 * nibble.rad) + nibble.rad;
 

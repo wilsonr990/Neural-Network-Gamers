@@ -1,6 +1,6 @@
 package gameEngine.view;
 
-import gameEngine.GameLoop;
+import gameEngine.EngineLoop;
 import gameEngine.Snake;
 import games.GameInterface;
 
@@ -8,11 +8,11 @@ import javax.swing.*;
 import java.awt.*;
 
 public class MainComponent extends JComponent{
-    private GameLoop gameLoop;  //TODO: delete this dependency
+    private EngineLoop engineLoop;  //TODO: delete this dependency
     private GameInterface gameInterface;  //TODO: delete this dependency
 
-    public MainComponent(GameLoop gameLoop, GameInterface gameInterface) {
-        this.gameLoop = gameLoop;
+    public MainComponent(EngineLoop engineLoop, GameInterface gameInterface) {
+        this.engineLoop = engineLoop;
         this.gameInterface = gameInterface;
     }
 
@@ -23,26 +23,26 @@ public class MainComponent extends JComponent{
         g.fillRect(0, 0, getWidth(), getHeight());
 
         // Stats:
-        if (gameLoop.displayStatisticsActive) {
+        if (engineLoop.displayStatisticsActive) {
             g.setColor(Color.DARK_GRAY);
             g.setFont(new Font("Arial", 0, 64));
-            g.drawString("t = " + Long.toString(gameLoop.clock / 1000), 20, 105);
+            g.drawString("t = " + Long.toString(engineLoop.clock / 1000), 20, 105);
 
-            g.drawString("g = " + Integer.toString((int) gameLoop.currentGeneration), 20, 205);
+            g.drawString("g = " + Integer.toString((int) engineLoop.currentGeneration), 20, 205);
             g.setFont(new Font("Arial", 0, 32));
-            g.drawString("Mut. Prob.: " + String.format("%1$,.3f", gameLoop.mutationrate), 20, 305);
-            g.drawString("Max fitness: " + Integer.toString((int) gameLoop.currentMaxFitness), 20, 355);
-            g.drawString("Best fitness: " + Integer.toString((int) gameLoop.bestscore), 20, 405);
+            g.drawString("Mut. Prob.: " + String.format("%1$,.3f", engineLoop.mutationrate), 20, 305);
+            g.drawString("Max fitness: " + Integer.toString((int) engineLoop.currentMaxFitness), 20, 355);
+            g.drawString("Best fitness: " + Integer.toString((int) engineLoop.bestscore), 20, 405);
 
             // print timeline:
-            synchronized (gameLoop.fitnessTimeline) {
-                if (!gameLoop.fitnessTimeline.isEmpty()) {
-                    double last = gameLoop.fitnessTimeline.getFirst();
+            synchronized (engineLoop.fitnessTimeline) {
+                if (!engineLoop.fitnessTimeline.isEmpty()) {
+                    double last = engineLoop.fitnessTimeline.getFirst();
                     int x = 0;
                     double limit = getHeight();
-                    if (limit < gameLoop.bestscore)
-                        limit = gameLoop.bestscore;
-                    for (Double d : gameLoop.fitnessTimeline) {
+                    if (limit < engineLoop.bestscore)
+                        limit = engineLoop.bestscore;
+                    for (Double d : engineLoop.fitnessTimeline) {
                         g.setColor(new Color(0, 1, 0, .5f));
                         g.drawLine(x, (int) (getHeight() - getHeight() * last / limit), x + 2, (int) (getHeight() - getHeight() * d / limit));
                         last = d;
@@ -52,12 +52,12 @@ public class MainComponent extends JComponent{
             }
         }
         // neural net:
-        if (gameLoop.singleSnakeModeActive) {
-            gameLoop.snakes.getFirst().brainNet.display(g, 0, gameInterface.getWidth(), gameInterface.getHeight());
+        if (engineLoop.singleSnakeModeActive) {
+            engineLoop.snakes.getFirst().brainNet.display(g, 0, gameInterface.getWidth(), gameInterface.getHeight());
         }
         // snakes:
-        synchronized (gameLoop.snakes) {
-            for (Snake s : gameLoop.snakes)
+        synchronized (engineLoop.snakes) {
+            for (Snake s : engineLoop.snakes)
                 s.draw(g);
             gameInterface.draw(g);
         }

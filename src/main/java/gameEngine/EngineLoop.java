@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-public class GameLoop implements Runnable {
+public class EngineLoop implements Runnable {
     private EngineUI ui;
     public long clock;
 
@@ -55,7 +55,7 @@ public class GameLoop implements Runnable {
      * Component with the main loop This should be separated from the graphics,
      * but I was to lazy.
      */
-    public GameLoop(Game game) {
+    public EngineLoop(Game game) {
         keyb = new KeyboardListener();
         this.game = game;
         ui = new EngineUI(this);
@@ -162,7 +162,7 @@ public class GameLoop implements Runnable {
                     if (!simulationPaused) {
                         int deadCount = 0;
                         game.update(ui.getWidth(), ui.getHeight());
-                        clock += GameLoop.UPDATEPERIOD;
+                        clock += EngineLoop.UPDATEPERIOD;
                         synchronized (fitnessTimeline) {
                             if (clock - statisticsLastMillis > 1000 && !singleSnakeModeActive) {
                                 fitnessTimeline.addLast(currentMaxFitness);

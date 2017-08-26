@@ -61,11 +61,11 @@ public class Snake {
 
 	public Snake(DNA dna, World world) {
         random.setSeed(random.nextLong());
-		double x = random.nextDouble() * (world.width - 2 * wallCollisionThreshold - 2 * GameLoop.globalCircleRadius) + wallCollisionThreshold
-				+ GameLoop.globalCircleRadius;
+		double x = random.nextDouble() * (world.width - 2 * wallCollisionThreshold - 2 * EngineLoop.globalCircleRadius) + wallCollisionThreshold
+				+ EngineLoop.globalCircleRadius;
         random.setSeed(random.nextLong());
-		double y = random.nextDouble() * (world.height - 2 * wallCollisionThreshold - 2 * GameLoop.globalCircleRadius) + wallCollisionThreshold
-				+ GameLoop.globalCircleRadius;
+		double y = random.nextDouble() * (world.height - 2 * wallCollisionThreshold - 2 * EngineLoop.globalCircleRadius) + wallCollisionThreshold
+				+ EngineLoop.globalCircleRadius;
 
 		int dnalength = NeuralNet.calcNumberOfCoeffs(stageSizes, isNNSymmetric) + 1;
 		if (dna == null) {
@@ -75,7 +75,7 @@ public class Snake {
 		}
 		snakeSegments.clear();
 		for (int i = 0; i < 1; i++) {
-			snakeSegments.add(new PhysicalCircle(x, y, GameLoop.globalCircleRadius));
+			snakeSegments.add(new PhysicalCircle(x, y, EngineLoop.globalCircleRadius));
 		}
 		this.angle = Math.atan2(world.height / 2 - y, world.width / 2 - x);
 		// setup brain:
