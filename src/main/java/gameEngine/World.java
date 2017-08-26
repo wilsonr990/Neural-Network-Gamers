@@ -1,16 +1,17 @@
 package gameEngine;
 
+import games.GameInterface;
+
 import java.awt.Color;
 import java.awt.Graphics;
 import java.util.LinkedList;
 import java.util.concurrent.Semaphore;
 
-public class World {
+public class World implements GameInterface{
 	/**
 	 * Struct to store state of the "world" Walls, nibbles and global time
 	 */
 	public int height, width;
-	public long clock;
 	public int maxNibbles = 20;
 	private Semaphore nibbleProtect = new Semaphore(1); // protect nibble list
 														// add/remove with
@@ -53,7 +54,6 @@ public class World {
 			p.updatePosition();
 			p.collideWall(50, 50, w - 50, h - 50);
 		}
-		clock += GameLoop.UPDATEPERIOD;
 	}
 
 	public void draw(Graphics g) {
@@ -61,6 +61,14 @@ public class World {
 		for (PhysicalCircle nibble : nibbles) {
 			g.fillOval((int) (nibble.x - nibble.rad), (int) (nibble.y - nibble.rad), (int) (2 * nibble.rad + 1), (int) (2 * nibble.rad + 1));
 		}
+	}
+
+	public double getWidth() {
+		return width;
+	}
+
+	public double getHeight() {
+		return height;
 	}
 
 	public void removeNibbles(LinkedList<PhysicalCircle> rem) {
@@ -83,6 +91,5 @@ public class World {
 		}
 		nibbles.clear();
 		nibbleProtect.release();
-		clock = 0;
 	}
 }

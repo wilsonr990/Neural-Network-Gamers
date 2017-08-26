@@ -12,6 +12,7 @@ import java.util.LinkedList;
 
 public class GameLoop implements Runnable {
     private EngineUI ui;
+    public long clock;
 
     // main update frequency:
     public static final long UPDATEPERIOD = 8;
@@ -21,14 +22,12 @@ public class GameLoop implements Runnable {
     // constants:
     public static final int globalCircleRadius = 20;
     public static final int numSnakes = 8;
-    public static final int numNibbles = 4;
 
     // Genetics parameter initialization:
     public static double mutationrate = .02;
     public double currentGeneration = 0;
 
     // world snake snakes initialization:
-    public World world = new World();
     public LinkedList<Snake> snakes = new LinkedList<Snake>();
     public LinkedList<Snake> backupSnakes = new LinkedList<Snake>(); // to
     // resume
@@ -50,16 +49,17 @@ public class GameLoop implements Runnable {
     public boolean simulationPaused = false;
     private long simulationLastMillis;
     private long statisticsLastMillis;
+    private Game game;
 
     /**
      * Component with the main loop This should be separated from the graphics,
      * but I was to lazy.
      */
-    public GameLoop() {
-		keyb = new KeyboardListener();
-        ui= new EngineUI(this);
-        world.height = 200;
-        world.width = 300;
+    public GameLoop(Game game) {
+        keyb = new KeyboardListener();
+        this.game = game;
+        ui = new EngineUI(this);
+        ui.addKeyListener(keyb);
     }
 
     /**
@@ -67,12 +67,13 @@ public class GameLoop implements Runnable {
      *
      * @param n amount of snakes
      */
-    public void firstGeneration(int n) {
+    public void createFirtGenerationOfPlayers(int n) {
         snakes.clear();
         for (int i = 0; i < n; i++) {
-            snakes.add(new Snake(null, world));
+            snakes.add(new Snake(null, game.getWorld()));
         }
-        world.reset();
+        game.reset();
+        clock = 0;
     }
 
     /**
@@ -111,8 +112,8 @@ public class GameLoop implements Runnable {
         int idx2 = (int) (Math.random() * matingpool.size());
         DNA parentA = matingpool.get(idx1).dna;
         DNA parentB = matingpool.get(idx2).dna;
-//        snakes.add(new Snake(bestDna.crossoverBytewise(parentB, mutationrate), world));
-        snakes.add(new Snake(parentA.crossoverBytewise(parentB, mutationrate), world));
+//        snakes.add(new Snake(bestDna.crossoverBytewise(parentB, mutationrate), game.getWorld()));
+        snakes.add(new Snake(parentA.crossoverBytewise(parentB, mutationrate), game.getWorld()));
     }
 
     public void start() {
@@ -136,7 +137,7 @@ public class GameLoop implements Runnable {
                                 backupSnakes.clear();
                                 backupSnakes.addAll(snakes);
                                 snakes.clear();
-                                snakes.add(new Snake(bestDna, world));
+                                snakes.add(new Snake(bestDna, game.getWorld()));
                             }
                             break;
                         case 'A': // a = pause
@@ -154,25 +155,26 @@ public class GameLoop implements Runnable {
                     }
                     // initilize first generation:
                     if (snakes.isEmpty()) {
-                        firstGeneration(numSnakes);
-                        world.newNibble(numNibbles);
+                        createFirtGenerationOfPlayers(numSnakes);
+                        game.prepare();
                     }
                     // computation:
                     if (!simulationPaused) {
                         int deadCount = 0;
-                        world.update(ui.getWidth(), ui.getHeight());
+                        game.update(ui.getWidth(), ui.getHeight());
+                        clock += GameLoop.UPDATEPERIOD;
                         synchronized (fitnessTimeline) {
-                            if (world.clock - statisticsLastMillis > 1000 && !singleSnakeModeActive) {
+                            if (clock - statisticsLastMillis > 1000 && !singleSnakeModeActive) {
                                 fitnessTimeline.addLast(currentMaxFitness);
                                 currentMaxFitness = 0;
-                                if (fitnessTimeline.size() >= world.width / 2) {
+                                if (fitnessTimeline.size() >= ui.getWidth() / 2) {
                                     fitnessTimeline.removeFirst();
                                 }
-                                statisticsLastMillis = world.clock;
+                                statisticsLastMillis = clock;
                             }
                         }
                         for (Snake s : snakes) {
-                            if (!s.update(world)) {
+                            if (!s.update(game.getWorld())) {
                                 deadCount++;
                             }
                             if (s.getFitness() > currentMaxFitness)
@@ -208,7 +210,7 @@ public class GameLoop implements Runnable {
                         }
                     } else {
                         // print status:
-                        snakes.get(0).brain(world);
+                        snakes.get(0).brain(game.getWorld());
                     }
 
                     ui.repaint();
@@ -217,5 +219,9 @@ public class GameLoop implements Runnable {
                 }
             }
         }
+    }
+
+    public Game getGame() {
+        return game;
     }
 }

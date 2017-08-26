@@ -13,7 +13,9 @@ public class MainWindow{
 	 * Simple JFrame as user interface
 	 */
 	public MainWindow() {
-		GameLoop loop = new GameLoop();
+		Game snakeGame = new SnakeGame();
+
+		GameLoop loop = new GameLoop(snakeGame);
 		loop.start();
 	}
 
