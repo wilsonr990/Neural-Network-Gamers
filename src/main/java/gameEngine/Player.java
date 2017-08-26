@@ -13,7 +13,7 @@ import java.util.Random;
 import neuralNetwork.NeuralNet;
 import neuralNetwork.Stage;
 
-public class Snake {
+public class Player {
 
 	// Movement constants:
 	public static final double maximumForwardSpeed = 5;
@@ -59,7 +59,7 @@ public class Snake {
 	 *            reference to the world for spawn point
 	 */
 
-	public Snake(DNA dna, World world) {
+	public Player(DNA dna, World world) {
         random.setSeed(random.nextLong());
 		double x = random.nextDouble() * (world.width - 2 * wallCollisionThreshold - 2 * EngineLoop.globalCircleRadius) + wallCollisionThreshold
 				+ EngineLoop.globalCircleRadius;
@@ -205,7 +205,7 @@ public class Snake {
 		public double distance = maximumSightDistance;
 		public int type = 0;
 		// Wall = 0;
-		// Snake = 1;
+		// Player = 1;
 		// Nibble = 2;
 	}
 
@@ -280,7 +280,7 @@ public class Snake {
 	 * @param objects
 	 *            List of objects to be checked
 	 * @param type
-	 *            Thing-Type: 0: Wall, 1: Snake, 2: Nibble
+	 *            Thing-Type: 0: Wall, 1: Player, 2: Nibble
 	 * @return Updated input array
 	 */
 	private Thing[] updateVisualInput(Thing input[], List<PhysicalCircle> objects, int type) {
@@ -312,7 +312,7 @@ public class Snake {
 	 *            Graphics object to draw to
 	 */
 	public void draw(Graphics g) {
-		// Snake body
+		// Player body
 		int alpha = (int) deathFade;
 		for (int i = 0; i < snakeSegments.size(); i++) {
 			Color c = new Color(Color.HSBtoRGB(hue, 1 - (float) i / ((float) snakeSegments.size() + 1f), 1));

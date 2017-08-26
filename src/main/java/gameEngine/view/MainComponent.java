@@ -1,7 +1,7 @@
 package gameEngine.view;
 
 import gameEngine.EngineLoop;
-import gameEngine.Snake;
+import gameEngine.Player;
 import games.GameInterface;
 
 import javax.swing.*;
@@ -53,11 +53,11 @@ public class MainComponent extends JComponent{
         }
         // neural net:
         if (engineLoop.singleSnakeModeActive) {
-            engineLoop.snakes.getFirst().brainNet.display(g, 0, gameInterface.getWidth(), gameInterface.getHeight());
+            engineLoop.players.getFirst().brainNet.display(g, 0, gameInterface.getWidth(), gameInterface.getHeight());
         }
-        // snakes:
-        synchronized (engineLoop.snakes) {
-            for (Snake s : engineLoop.snakes)
+        // players:
+        synchronized (engineLoop.players) {
+            for (Player s : engineLoop.players)
                 s.draw(g);
             gameInterface.draw(g);
         }

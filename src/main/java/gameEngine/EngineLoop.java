@@ -27,9 +27,9 @@ public class EngineLoop implements Runnable {
     public static double mutationrate = .02;
     public double currentGeneration = 0;
 
-    // world snake snakes initialization:
-    public LinkedList<Snake> snakes = new LinkedList<Snake>();
-    public LinkedList<Snake> backupSnakes = new LinkedList<Snake>(); // to
+    // world snake players initialization:
+    public LinkedList<Player> players = new LinkedList<Player>();
+    public LinkedList<Player> backupPlayers = new LinkedList<Player>(); // to
     // resume
     // from
     // single
@@ -51,10 +51,6 @@ public class EngineLoop implements Runnable {
     private long statisticsLastMillis;
     private Game game;
 
-    /**
-     * Component with the main loop This should be separated from the graphics,
-     * but I was to lazy.
-     */
     public EngineLoop(Game game) {
         keyb = new KeyboardListener();
         this.game = game;
@@ -62,36 +58,26 @@ public class EngineLoop implements Runnable {
         ui.addKeyListener(keyb);
     }
 
-    /**
-     * initializes snake array with n fresh snakes
-     *
-     * @param n amount of snakes
-     */
-    public void createFirtGenerationOfPlayers(int n) {
-        snakes.clear();
+    public void createFirstGenerationOfPlayers(int n) {
+        players.clear();
         for (int i = 0; i < n; i++) {
-            snakes.add(new Snake(null, game.getWorld()));
+            players.add(new Player(null, game.getWorld()));
         }
         game.reset();
         clock = 0;
     }
 
-    /**
-     * Creates the mating pool out of the snake-list
-     *
-     * @return Mating pool as list
-     */
-    public ArrayList<Snake> makeMatingpool() {
-        ArrayList<Snake> matingpool = new ArrayList<Snake>();
+    public ArrayList<Player> makeMatingpool() {
+        ArrayList<Player> matingpool = new ArrayList<Player>();
         // get maximum fitness:
         double maxscore = 0;
-        for (Snake s : snakes) {
+        for (Player s : players) {
             if (s.getFitness() > maxscore) {
                 maxscore = s.getFitness();
             }
         }
-        // Add snakes according to fitness
-        for (Snake s : snakes) {
+        // Add players according to fitness
+        for (Player s : players) {
             int amount = (int) (s.getFitness() * 100 / maxscore);
             for (int i = 0; i < amount; i++) {
                 matingpool.add(s);
@@ -100,20 +86,16 @@ public class EngineLoop implements Runnable {
         return matingpool;
     }
 
-    /**
-     * Creates a new snake using the genetic algorithm snake adds it to the
-     * snake-list
-     */
     public void newSnake() {
 //        mutationrate = (1-currentMaxFitness/bestscore)*0.1;
         mutationrate = 10 / currentMaxFitness;
-        ArrayList<Snake> matingpool = makeMatingpool();
+        ArrayList<Player> matingpool = makeMatingpool();
         int idx1 = (int) (Math.random() * matingpool.size());
         int idx2 = (int) (Math.random() * matingpool.size());
         DNA parentA = matingpool.get(idx1).dna;
         DNA parentB = matingpool.get(idx2).dna;
-//        snakes.add(new Snake(bestDna.crossoverBytewise(parentB, mutationrate), game.getWorld()));
-        snakes.add(new Snake(parentA.crossoverBytewise(parentB, mutationrate), game.getWorld()));
+//        players.add(new Player(bestDna.crossoverBytewise(parentB, mutationrate), game.getWorld()));
+        players.add(new Player(parentA.crossoverBytewise(parentB, mutationrate), game.getWorld()));
     }
 
     public void start() {
@@ -125,7 +107,7 @@ public class EngineLoop implements Runnable {
         statisticsLastMillis = 0;
         while (true) {
             if (System.currentTimeMillis() - simulationLastMillis > UPDATEPERIOD) {
-                synchronized (snakes) { // protect read
+                synchronized (players) { // protect read
                     long currentTime = System.currentTimeMillis();
                     // Controls
                     char keyCode = (char) keyb.getKey();
@@ -134,10 +116,10 @@ public class EngineLoop implements Runnable {
                             if (!singleSnakeModeActive) {
                                 singleSnakeModeActive = true;
                                 displayStatisticsActive = false;
-                                backupSnakes.clear();
-                                backupSnakes.addAll(snakes);
-                                snakes.clear();
-                                snakes.add(new Snake(bestDna, game.getWorld()));
+                                backupPlayers.clear();
+                                backupPlayers.addAll(players);
+                                players.clear();
+                                players.add(new Player(bestDna, game.getWorld()));
                             }
                             break;
                         case 'A': // a = pause
@@ -154,8 +136,8 @@ public class EngineLoop implements Runnable {
                             break;
                     }
                     // initilize first generation:
-                    if (snakes.isEmpty()) {
-                        createFirtGenerationOfPlayers(numSnakes);
+                    if (players.isEmpty()) {
+                        createFirstGenerationOfPlayers(numSnakes);
                         game.prepare();
                     }
                     // computation:
@@ -173,7 +155,7 @@ public class EngineLoop implements Runnable {
                                 statisticsLastMillis = clock;
                             }
                         }
-                        for (Snake s : snakes) {
+                        for (Player s : players) {
                             if (!s.update(game.getWorld())) {
                                 deadCount++;
                             }
@@ -191,26 +173,26 @@ public class EngineLoop implements Runnable {
                         }
                         if (deadCount > 0 && singleSnakeModeActive) {
                             singleSnakeModeActive = false;
-                            snakes.clear();
-                            snakes.addAll(backupSnakes);
+                            players.clear();
+                            players.addAll(backupPlayers);
 
                         } else {
-                            // new snakes
+                            // new players
                             for (int i = 0; i < deadCount; i++) {
                                 newSnake();
                                 currentGeneration += 1 / (double) numSnakes;
                             }
                         }
-                        Iterator<Snake> it = snakes.iterator();
+                        Iterator<Player> it = players.iterator();
                         while (it.hasNext()) {
-                            Snake s = it.next();
+                            Player s = it.next();
                             if (s.deathFade <= 0) {
                                 it.remove();
                             }
                         }
                     } else {
                         // print status:
-                        snakes.get(0).brain(game.getWorld());
+                        players.get(0).brain(game.getWorld());
                     }
 
                     ui.repaint();
