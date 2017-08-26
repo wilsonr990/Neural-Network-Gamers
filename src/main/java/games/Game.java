@@ -1,6 +1,6 @@
 package games;
 
-import gameEngine.World;
+import games.snake.World;
 
 public interface Game {
     World getWorld();

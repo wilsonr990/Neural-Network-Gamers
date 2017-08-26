@@ -1,5 +1,8 @@
-package gameEngine;
+package players;
 
+import gameEngine.EngineLoop;
+import helpers.PhysicalCircle;
+import games.snake.World;
 import genetics.DNA;
 import helpers.DoubleMath;
 

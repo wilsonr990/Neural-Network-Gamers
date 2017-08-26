@@ -1,7 +1,7 @@
 package gameEngine.view;
 
 import gameEngine.EngineLoop;
-import gameEngine.Player;
+import players.Player;
 import games.GameInterface;
 
 import javax.swing.*;

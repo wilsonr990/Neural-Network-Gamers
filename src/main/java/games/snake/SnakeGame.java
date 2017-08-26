@@ -1,6 +1,5 @@
 package games.snake;
 
-import gameEngine.World;
 import games.Game;
 
 public class SnakeGame implements Game {

@@ -1,4 +1,4 @@
-package gameEngine;
+package helpers;
 
 import java.awt.Point;
 

@@ -4,6 +4,7 @@ import gameEngine.view.EngineUI;
 import games.Game;
 import genetics.DNA;
 import helpers.KeyboardListener;
+import players.Player;
 
 import java.io.IOException;
 import java.util.ArrayList;
