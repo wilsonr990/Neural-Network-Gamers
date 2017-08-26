@@ -1,5 +1,7 @@
-package gameEngine;
+package games.snake;
 
+import gameEngine.EngineLoop;
+import helpers.PhysicalCircle;
 import games.GameInterface;
 
 import java.awt.Color;
