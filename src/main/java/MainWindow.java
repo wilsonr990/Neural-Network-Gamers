@@ -1,9 +1,8 @@
 import gameEngine.GameLoop;
-import helpers.KeyboardListener;
+import games.Game;
+import games.snake.SnakeGame;
 
-import javax.swing.JFrame;
-
-public class MainWindow extends JFrame {
+public class MainWindow{
 	/**
 	 * main function of the whole simulation
 	 */
@@ -14,14 +13,8 @@ public class MainWindow extends JFrame {
 	 * Simple JFrame as user interface
 	 */
 	public MainWindow() {
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		setSize( 1000, 600);
-		setExtendedState(MAXIMIZED_BOTH);
-		setTitle("Neural Net Snake Genetic Algorithm");
-		KeyboardListener keyb = new KeyboardListener();
-		addKeyListener(keyb);
-		add(new GameLoop(keyb));
-		setVisible(true);
+		GameLoop loop = new GameLoop();
+		loop.start();
 	}
 
 }
