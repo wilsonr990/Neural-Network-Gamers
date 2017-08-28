@@ -1,6 +1,7 @@
 package gameEngine.view;
 
 import gameEngine.EngineLoop;
+import games.Game;
 import players.Player;
 import games.GameInterface;
 
@@ -9,11 +10,11 @@ import java.awt.*;
 
 public class MainComponent extends JComponent{
     private EngineLoop engineLoop;  //TODO: delete this dependency
-    private GameInterface gameInterface;  //TODO: delete this dependency
+    private Game game;  //TODO: delete this dependency
 
-    public MainComponent(EngineLoop engineLoop, GameInterface gameInterface) {
+    public MainComponent(EngineLoop engineLoop, Game game) {
         this.engineLoop = engineLoop;
-        this.gameInterface = gameInterface;
+        this.game = game;
     }
 
     protected void paintComponent(Graphics g) {
@@ -53,13 +54,13 @@ public class MainComponent extends JComponent{
         }
         // neural net:
         if (engineLoop.singleSnakeModeActive) {
-            engineLoop.players.getFirst().brainNet.display(g, 0, gameInterface.getWidth(), gameInterface.getHeight());
+            engineLoop.players.getFirst().brainNet.display(g, 0, game.getWidth(), game.getHeight());
         }
         // players:
         synchronized (engineLoop.players) {
             for (Player s : engineLoop.players)
                 s.draw(g);
-            gameInterface.draw(g);
+            game.getWorld().draw(g);
         }
     }
 }

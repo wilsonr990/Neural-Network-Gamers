@@ -11,7 +11,7 @@ public class EngineUI extends JFrame{
 
     public EngineUI(EngineLoop engineLoop){
         this.engineLoop = engineLoop;
-        mainComponent = new MainComponent(this.engineLoop, this.engineLoop.getGame().getWorld());
+        mainComponent = new MainComponent(this.engineLoop, this.engineLoop.getGame());
 
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setSize( 1000, 600);
