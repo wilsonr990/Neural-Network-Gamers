@@ -1,6 +1,7 @@
 package games;
 
 import helpers.PhysicalCircle;
+import players.Player;
 
 import java.util.LinkedList;
 
@@ -11,4 +12,5 @@ public interface Game {
     LinkedList<PhysicalCircle> getDrawables();
     double getWidth();
     double getHeight();
+    void addPlayer(Player player);
 }

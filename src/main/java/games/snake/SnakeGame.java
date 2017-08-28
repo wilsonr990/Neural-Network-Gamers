@@ -4,8 +4,11 @@ import gameEngine.EngineLoop;
 import games.Game;
 import games.World;
 import helpers.PhysicalCircle;
+import players.Player;
 
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 
 public class SnakeGame implements Game {
     public World world = new World(this);
@@ -13,6 +16,9 @@ public class SnakeGame implements Game {
     public LinkedList<Snake> snakes = new LinkedList<Snake>();
     private LinkedList<PhysicalCircle> nibbles = new LinkedList<PhysicalCircle>();
     public int height, width;
+
+    // TODO: Just for now player-game interface will be here but it should be moved
+    Map<Snake, Player> playersMap = new HashMap<Snake, Player>();
 
     public SnakeGame() {
         height = 200;
@@ -85,5 +91,11 @@ public class SnakeGame implements Game {
 
     public double getHeight() {
         return height;
+    }
+
+    public void addPlayer(Player player) {
+        Snake snake = new Snake();
+        snakes.add(snake);
+        playersMap.put(snake, player);
     }
 }
