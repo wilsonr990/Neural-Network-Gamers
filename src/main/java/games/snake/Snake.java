@@ -1,20 +1,20 @@
 package games.snake;
 
 import gameEngine.EngineLoop;
+import games.uiTemplates.Nibble;
 import helpers.PhysicalCircle;
 
 import java.awt.*;
-import java.awt.geom.Line2D;
 import java.util.ArrayList;
 
 public class Snake {
 
     // scoring constants:
-    public static final double nibblebonus = 20;
-    public static final int healthbonus = 10; // Added each time snake eats
-    public static final double healthdecrement = .02; // decremented each loop
-    public ArrayList<PhysicalCircle> snakeSegments = new ArrayList<PhysicalCircle>(100);
-    public double health;
+    private static final double nibblebonus = 20;
+    private static final int healthbonus = 10; // Added each time snake eats
+    private static final double healthdecrement = .02; // decremented each loop
+    private ArrayList<PhysicalCircle> snakeSegments = new ArrayList<PhysicalCircle>(100);
+    private double health;
     SnakeBody body;
 
     public Snake(Point p) {
@@ -24,14 +24,29 @@ public class Snake {
     }
 
     public boolean isAlive() {
-        return health>0;
+        return health > 0;
     }
 
     public void update() {
-        health-=healthdecrement;
+        health -= healthdecrement;
     }
 
     public SnakeBody getBody() {
         return body;
+    }
+
+    public void eat(Food n) {
+        health += n.getNutritiveValue();
+        if (health > healthbonus * 3)
+            health = healthbonus * 3;
+        snakeSegments.add(new PhysicalCircle(snakeSegments.get(snakeSegments.size() - 1).x, snakeSegments.get(snakeSegments.size() - 1).y, EngineLoop.globalCircleRadius));
+    }
+
+    public double getHealth() {
+        return health;
+    }
+
+    public int getLength() {
+        return snakeSegments.size();
     }
 }

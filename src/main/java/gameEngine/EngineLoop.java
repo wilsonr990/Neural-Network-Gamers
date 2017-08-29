@@ -98,7 +98,7 @@ public class EngineLoop implements Runnable {
         int idx2 = (int) (Math.random() * matingpool.size());
         DNA parentA = matingpool.get(idx1).dna;
         DNA parentB = matingpool.get(idx2).dna;
-//        players.add(new Player(bestDna.crossoverBytewise(parentB, mutationrate), game.getGameInterface()));
+//        Player p = new Player(bestDna.crossoverBytewise(parentB, mutationrate), game);
         Player p = new Player(parentA.crossoverBytewise(parentB, mutationrate), game);
         players.add(p);
         game.addPlayer(p);

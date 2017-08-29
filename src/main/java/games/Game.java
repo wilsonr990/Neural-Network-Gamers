@@ -1,9 +1,8 @@
 package games;
 
-import games.view.Drawable;
+import games.uiTemplates.Drawable;
 import players.Player;
 
-import java.util.Iterator;
 import java.util.LinkedList;
 
 public interface Game {

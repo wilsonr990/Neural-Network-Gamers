@@ -1,6 +1,6 @@
 package games;
 
-import games.view.Drawable;
+import games.uiTemplates.Drawable;
 
 import java.awt.*;
 import java.util.*;

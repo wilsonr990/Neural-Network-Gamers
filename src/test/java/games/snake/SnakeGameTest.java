@@ -1,8 +1,7 @@
 package games.snake;
 
-import games.view.Nibble;
-import games.view.Wall;
-import helpers.PhysicalCircle;
+import games.uiTemplates.Nibble;
+import games.uiTemplates.Wall;
 import org.junit.Assert;
 import org.junit.Test;
 import players.Player;

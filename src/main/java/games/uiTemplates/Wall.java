@@ -1,4 +1,4 @@
-package games.view;
+package games.uiTemplates;
 
 import java.awt.*;
 import java.awt.geom.Line2D;

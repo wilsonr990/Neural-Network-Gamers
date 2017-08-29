@@ -49,6 +49,7 @@ public class PhysicalCircle extends Point2D{
     public PhysicalCircle(Point p) {
         this.x = p.x;
         this.y = p.y;
+        rad = 0;
     }
 
     /**

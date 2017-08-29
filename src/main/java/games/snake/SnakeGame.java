@@ -3,9 +3,9 @@ package games.snake;
 import gameEngine.EngineLoop;
 import games.Game;
 import games.GameInterface;
-import games.view.Nibble;
-import games.view.Drawable;
-import games.view.Wall;
+import games.uiTemplates.Nibble;
+import games.uiTemplates.Drawable;
+import games.uiTemplates.Wall;
 import helpers.PhysicalCircle;
 import players.Player;
 
@@ -82,8 +82,8 @@ public class SnakeGame implements Game {
     }
 
     public void removePlayer(Player p) {
-        for(Snake s : snakes.keySet()) {
-            if(snakes.get(s).equals(p)){
+        for (Snake s : snakes.keySet()) {
+            if (snakes.get(s).equals(p)) {
                 snakes.remove(s);
                 break;
             }
@@ -98,13 +98,13 @@ public class SnakeGame implements Game {
         walls.get(2).setLine(width - 8, height - 8, width - 8, 4);
         walls.get(3).setLine(width - 8, 4, 4, 4);
 
-        for (PhysicalCircle p : nibbles) {
-            p.updatePosition();
-            p.collideWall(50, 50, w - 50, h - 50);
+        for (Nibble n : nibbles) {
+            n.updatePosition();
+            n.collideWall(50, 50, w - 50, h - 50);
         }
         for (Snake s : snakes.keySet()) {
+            snakes.get(s).update(this, s);
             s.update();
-            snakes.get(s).update(this);
         }
     }
 
@@ -112,7 +112,7 @@ public class SnakeGame implements Game {
         LinkedList<Drawable> drawables = new LinkedList<Drawable>();
         drawables.addAll(nibbles);
         drawables.addAll(walls);
-        for(Snake s: snakes.keySet()) {
+        for (Snake s : snakes.keySet()) {
             drawables.add(s.getBody());
         }
         return drawables;

@@ -2,8 +2,9 @@ package players;
 
 import gameEngine.EngineLoop;
 import games.Game;
+import games.snake.Snake;
 import games.snake.SnakeGame;
-import games.view.Nibble;
+import games.uiTemplates.Nibble;
 import genetics.DNA;
 import helpers.DoubleMath;
 import helpers.PhysicalCircle;
@@ -34,7 +35,6 @@ public class Player {
     // scoring constants:
     public static final double nibblebonus = 20;
     public static final int healthbonus = 10; // Added each time snake eats
-    public static final double healthdecrement = .02; // decremented each loop
 
     // misc:
     public final boolean displayCuteEyes = false; // try it out yourself :)
@@ -87,7 +87,6 @@ public class Player {
         score = 0;
         deathFade = 180;
         isDead = false;
-        health = healthbonus * 3 / 2;
         age = 0;
     }
 
@@ -105,13 +104,14 @@ public class Player {
     /**
      * Movement, aging and collisions
      *
-     * @param game reference to the GameInterface
+     * @param game  reference to the GameInterface
+     * @param snake
      * @return true when snake died that round.
      */
-    public boolean update(SnakeGame game) {
+    public boolean update(SnakeGame game, Snake snake) {
         if (isDead) {
             deathFade -= .6;
-            lastUpdate=true;
+            lastUpdate = true;
             return true;
         }
         age += .1;
@@ -167,28 +167,26 @@ public class Player {
         // Check eaten nibbles:
         LinkedList<PhysicalCircle> nibblesToRemove = new LinkedList<PhysicalCircle>();
         int nibbleEatCount = 0;
-        for (PhysicalCircle nibble : game.getNibbles()) {
+        for (Nibble nibble : game.getNibbles()) {
             if (head.isColliding(nibble, -10)) {
                 score += game.calcValue(nibble);
                 snakeSegments.add(new PhysicalCircle(snakeSegments.get(snakeSegments.size() - 1).x, snakeSegments.get(snakeSegments.size() - 1).y, nibble.rad));
                 nibblesToRemove.add(nibble);
                 nibbleEatCount++;
+                snake.eat(nibble);
             }
         }
         score += nibbleEatCount * nibblebonus;
         game.createNibbles(nibbleEatCount);
         game.removeNibbles(nibblesToRemove);
 
-        // health / hunger:
-        health += nibbleEatCount * healthbonus;
-        if (health > 3 * healthbonus) // saturate
-            health = 3 * healthbonus;
-        health -= healthdecrement;
-        if (health <= 0) {
+        health = snake.getHealth();
+
+        if (!snake.isAlive()) {
             isDead = true;
             score /= 2;
         }
-        lastUpdate=!isDead;
+        lastUpdate = !isDead;
         return !isDead;
     }
 
