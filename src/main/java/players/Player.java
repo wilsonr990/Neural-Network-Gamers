@@ -52,6 +52,7 @@ public class Player {
     public double deathFade = 180;
     public double health;
     static Random random = new Random(System.currentTimeMillis());
+    private boolean lastUpdate;
 
     /**
      * Initializes a new snake with given DNA
@@ -110,6 +111,7 @@ public class Player {
     public boolean update(SnakeGame game) {
         if (isDead) {
             deathFade -= .6;
+            lastUpdate=true;
             return true;
         }
         age += .1;
@@ -186,6 +188,7 @@ public class Player {
             isDead = true;
             score /= 2;
         }
+        lastUpdate=!isDead;
         return !isDead;
     }
 
@@ -196,6 +199,10 @@ public class Player {
      */
     public double getFitness() {
         return score + health / 4;
+    }
+
+    public boolean getLastUpdateResponse() {
+        return lastUpdate;
     }
 
     /**

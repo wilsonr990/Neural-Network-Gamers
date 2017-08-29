@@ -3,6 +3,7 @@ package games;
 import games.view.Drawable;
 import players.Player;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 
 public interface Game {
@@ -13,4 +14,5 @@ public interface Game {
     double getWidth();
     double getHeight();
     void addPlayer(Player player);
+    void removePlayer(Player p);
 }

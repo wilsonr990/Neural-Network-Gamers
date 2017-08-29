@@ -1,14 +1,11 @@
 package games.snake;
 
 import gameEngine.EngineLoop;
-import games.Game;
 import helpers.PhysicalCircle;
 
 import java.awt.*;
+import java.awt.geom.Line2D;
 import java.util.ArrayList;
-import java.util.Random;
-
-import static players.Player.wallCollisionThreshold;
 
 public class Snake {
 
@@ -18,10 +15,12 @@ public class Snake {
     public static final double healthdecrement = .02; // decremented each loop
     public ArrayList<PhysicalCircle> snakeSegments = new ArrayList<PhysicalCircle>(100);
     public double health;
+    SnakeBody body;
 
     public Snake(Point p) {
         health = healthbonus * 3 / 2;
         snakeSegments.add(new PhysicalCircle(p.x, p.y, EngineLoop.globalCircleRadius));
+        body = new SnakeBody();
     }
 
     public boolean isAlive() {
@@ -30,5 +29,9 @@ public class Snake {
 
     public void update() {
         health-=healthdecrement;
+    }
+
+    public SnakeBody getBody() {
+        return body;
     }
 }

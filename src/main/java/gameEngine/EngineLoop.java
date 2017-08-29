@@ -62,10 +62,12 @@ public class EngineLoop implements Runnable {
 
     public void createFirstGenerationOfPlayers(int n) {
         players.clear();
-        for (int i = 0; i < n; i++) {
-            players.add(new Player(null, game));
-        }
         game.reset();
+        for (int i = 0; i < n; i++) {
+            Player p = new Player(null, game);
+            players.add(p);
+            game.addPlayer(p);
+        }
         clock = 0;
     }
 
@@ -97,7 +99,9 @@ public class EngineLoop implements Runnable {
         DNA parentA = matingpool.get(idx1).dna;
         DNA parentB = matingpool.get(idx2).dna;
 //        players.add(new Player(bestDna.crossoverBytewise(parentB, mutationrate), game.getGameInterface()));
-        players.add(new Player(parentA.crossoverBytewise(parentB, mutationrate), game));
+        Player p = new Player(parentA.crossoverBytewise(parentB, mutationrate), game);
+        players.add(p);
+        game.addPlayer(p);
     }
 
     public void start() {
@@ -121,7 +125,10 @@ public class EngineLoop implements Runnable {
                                 backupPlayers.clear();
                                 backupPlayers.addAll(players);
                                 players.clear();
-                                players.add(new Player(bestDna, game));
+                                Player p = new Player(bestDna, game);
+                                players.add(p);
+                                game.reset();
+                                game.addPlayer(p);
                             }
                             break;
                         case 'A': // a = pause
@@ -144,7 +151,6 @@ public class EngineLoop implements Runnable {
                     // computation:
                     if (!simulationPaused) {
                         int deadCount = 0;
-                        game.update(ui.getWidth(), ui.getHeight());
                         clock += EngineLoop.UPDATEPERIOD;
                         synchronized (fitnessTimeline) {
                             if (clock - statisticsLastMillis > 1000 && !singleSnakeModeActive) {
@@ -156,8 +162,9 @@ public class EngineLoop implements Runnable {
                                 statisticsLastMillis = clock;
                             }
                         }
+                        game.update(ui.getWidth(), ui.getHeight());
                         for (Player p : players) {
-                            if (!p.update((SnakeGame) game)) {
+                            if (!p.getLastUpdateResponse()) {
                                 deadCount++;
                             }
                             if (p.getFitness() > currentMaxFitness)
@@ -176,6 +183,9 @@ public class EngineLoop implements Runnable {
                             singleSnakeModeActive = false;
                             players.clear();
                             players.addAll(backupPlayers);
+                            game.reset();
+                            for(Player p: backupPlayers)
+                                game.addPlayer(p);
 
                         } else {
                             // new players
@@ -188,6 +198,7 @@ public class EngineLoop implements Runnable {
                         while (it.hasNext()) {
                             Player s = it.next();
                             if (s.deathFade <= 0) {
+                                game.removePlayer(s);
                                 it.remove();
                             }
                         }

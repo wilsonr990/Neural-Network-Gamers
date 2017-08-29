@@ -5,12 +5,12 @@ import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
-public class Wall extends Line2D {
+public class Wall extends Line2D implements Drawable {
     private Point startPoint = new Point();
     private Point endPoint = new Point();
 
     public Wall(double x1, double y1, double x2, double y2) {
-        setLine(x1,y1,x2,y2);
+        setLine(x1, y1, x2, y2);
     }
 
     public double getX1() {
@@ -44,5 +44,10 @@ public class Wall extends Line2D {
 
     public Rectangle2D getBounds2D() {
         return super.getBounds();
+    }
+
+    public void draw(Graphics g) {
+        g.setColor(Color.WHITE);
+        g.drawLine((int) getX1(), (int) getY1(), (int) getX2(), (int) getY2());
     }
 }

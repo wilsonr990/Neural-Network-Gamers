@@ -33,10 +33,10 @@ public class SnakeGame implements Game {
     }
 
     private void createWalls() {
-        walls.add(new Wall(0, 0, 0, height));
-        walls.add(new Wall(0, height, width, height));
-        walls.add(new Wall(width, height, width, 0));
-        walls.add(new Wall(width, 0, 0, 0));
+        walls.add(new Wall(4, 4, 4, height - 8));
+        walls.add(new Wall(4, height - 8, width - 8, height - 8));
+        walls.add(new Wall(width - 8, height - 8, width - 8, 4));
+        walls.add(new Wall(width - 8, 4, 4, 4));
     }
 
     public void createNibbles(int n) {
@@ -81,13 +81,22 @@ public class SnakeGame implements Game {
         }
     }
 
+    public void removePlayer(Player p) {
+        for(Snake s : snakes.keySet()) {
+            if(snakes.get(s).equals(p)){
+                snakes.remove(s);
+                break;
+            }
+        }
+    }
+
     public void update(int w, int h) {
         this.width = w;
         this.height = h;
-        walls.get(0).setLine(0, 0, 0, height);
-        walls.get(0).setLine(0, height, width, height);
-        walls.get(0).setLine(width, height, width, 0);
-        walls.get(0).setLine(width, 0, 0, 0);
+        walls.get(0).setLine(4, 4, 4, height - 8);
+        walls.get(1).setLine(4, height - 8, width - 8, height - 8);
+        walls.get(2).setLine(width - 8, height - 8, width - 8, 4);
+        walls.get(3).setLine(width - 8, 4, 4, 4);
 
         for (PhysicalCircle p : nibbles) {
             p.updatePosition();
@@ -102,6 +111,10 @@ public class SnakeGame implements Game {
     public LinkedList<Drawable> getDrawables() {
         LinkedList<Drawable> drawables = new LinkedList<Drawable>();
         drawables.addAll(nibbles);
+        drawables.addAll(walls);
+        for(Snake s: snakes.keySet()) {
+            drawables.add(s.getBody());
+        }
         return drawables;
     }
 
