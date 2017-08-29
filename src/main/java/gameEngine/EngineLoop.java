@@ -29,7 +29,7 @@ public class EngineLoop implements Runnable {
     public static double mutationrate = .02;
     public double currentGeneration = 0;
 
-    // world snake players initialization:
+    // GameInterface snake players initialization:
     public LinkedList<Player> players = new LinkedList<Player>();
     public LinkedList<Player> backupPlayers = new LinkedList<Player>(); // to
     // resume
@@ -96,7 +96,7 @@ public class EngineLoop implements Runnable {
         int idx2 = (int) (Math.random() * matingpool.size());
         DNA parentA = matingpool.get(idx1).dna;
         DNA parentB = matingpool.get(idx2).dna;
-//        players.add(new Player(bestDna.crossoverBytewise(parentB, mutationrate), game.getWorld()));
+//        players.add(new Player(bestDna.crossoverBytewise(parentB, mutationrate), game.getGameInterface()));
         players.add(new Player(parentA.crossoverBytewise(parentB, mutationrate), game));
     }
 

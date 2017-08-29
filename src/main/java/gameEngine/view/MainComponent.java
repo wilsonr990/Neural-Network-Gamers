@@ -3,7 +3,6 @@ package gameEngine.view;
 import gameEngine.EngineLoop;
 import games.Game;
 import players.Player;
-import games.GameInterface;
 
 import javax.swing.*;
 import java.awt.*;
@@ -60,7 +59,7 @@ public class MainComponent extends JComponent{
         synchronized (engineLoop.players) {
             for (Player s : engineLoop.players)
                 s.draw(g);
-            game.getWorld().draw(g);
+            game.getGameInterface().draw(g);
         }
     }
 }

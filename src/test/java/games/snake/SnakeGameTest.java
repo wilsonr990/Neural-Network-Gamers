@@ -6,6 +6,7 @@ import org.junit.Test;
 import players.Player;
 
 import java.util.LinkedList;
+import java.util.Set;
 
 public class SnakeGameTest {
     @Test
@@ -14,7 +15,7 @@ public class SnakeGameTest {
 
         // just created
         LinkedList<PhysicalCircle> nibbles = game.getNibbles();
-        LinkedList<Snake> snakes = game.getSnakes();
+        Set<Snake> snakes = game.getSnakes();
         Assert.assertEquals(4, nibbles.size());
         Assert.assertEquals(0, snakes.size());
 
@@ -34,8 +35,15 @@ public class SnakeGameTest {
         Player player = new Player(null, game);
         game.addPlayer(player);
         LinkedList<PhysicalCircle> nibbles = game.getNibbles();
-        LinkedList<Snake> snakes = game.getSnakes();
+        Set<Snake> snakes = game.getSnakes();
         Assert.assertEquals(4, nibbles.size());
         Assert.assertEquals(1, snakes.size());
+
+        // onReset players are removed
+        game.reset();
+        nibbles = game.getNibbles();
+        snakes = game.getSnakes();
+        Assert.assertEquals(4, nibbles.size());
+        Assert.assertEquals(0, snakes.size());
     }
 }

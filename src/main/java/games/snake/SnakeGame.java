@@ -2,23 +2,22 @@ package games.snake;
 
 import gameEngine.EngineLoop;
 import games.Game;
-import games.World;
+import games.GameInterface;
+import games.GameInterface;
 import helpers.PhysicalCircle;
 import players.Player;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
+import java.awt.*;
+import java.util.*;
 
 public class SnakeGame implements Game {
-    public World world = new World(this);
+    public GameInterface GameInterface = new GameInterface(this);
     public static final int numNibbles = 4;
-    public LinkedList<Snake> snakes = new LinkedList<Snake>();
     private LinkedList<PhysicalCircle> nibbles = new LinkedList<PhysicalCircle>();
     public int height, width;
 
     // TODO: Just for now player-game interface will be here but it should be moved
-    Map<Snake, Player> playersMap = new HashMap<Snake, Player>();
+    Map<Snake, Player> snakes = new HashMap<Snake, Player>();
 
     public SnakeGame() {
         height = 200;
@@ -53,12 +52,33 @@ public class SnakeGame implements Game {
         return (int) (5 + (8d * Math.min(Math.exp(-(double) (p.t - 800) / 2000d), 1)));
     }
 
+    public LinkedList<PhysicalCircle> getNibbles() {
+        return nibbles;
+    }
+
+    public Set<Snake> getSnakes() {
+        return snakes.keySet();
+    }
+
+    public void addPlayer(Player player) {
+        Random random = new Random();
+        int x = (int) (random.nextDouble() * (getWidth() - 2 * EngineLoop.globalCircleRadius) + EngineLoop.globalCircleRadius);
+        random.setSeed(random.nextLong());
+        int y = (int) (random.nextDouble() * (getHeight() - 2 * EngineLoop.globalCircleRadius) + EngineLoop.globalCircleRadius);
+        Snake snake = new Snake(new Point(x, y));
+        snakes.put(snake, player);
+    }
+
     public void update(int w, int h) {
         this.width = w;
         this.height = h;
         for (PhysicalCircle p : nibbles) {
             p.updatePosition();
             p.collideWall(50, 50, w - 50, h - 50);
+        }
+        for (Snake s : snakes.keySet()) {
+            s.update();
+            snakes.get(s).update(this);
         }
     }
 
@@ -68,21 +88,15 @@ public class SnakeGame implements Game {
         return drawables;
     }
 
-    public World getWorld() {
-        return world;
+    public GameInterface getGameInterface() {
+        return GameInterface;
     }
 
     public void reset() {
         nibbles.clear();
+        snakes.clear();
+        snakes.clear();
         prepare();
-    }
-
-    public LinkedList<PhysicalCircle> getNibbles() {
-        return nibbles;
-    }
-
-    public LinkedList<Snake> getSnakes() {
-        return snakes;
     }
 
     public double getWidth() {
@@ -91,11 +105,5 @@ public class SnakeGame implements Game {
 
     public double getHeight() {
         return height;
-    }
-
-    public void addPlayer(Player player) {
-        Snake snake = new Snake();
-        snakes.add(snake);
-        playersMap.put(snake, player);
     }
 }

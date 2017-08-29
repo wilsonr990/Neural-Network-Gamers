@@ -3,20 +3,17 @@ package players;
 import gameEngine.EngineLoop;
 import games.Game;
 import games.snake.SnakeGame;
-import helpers.PhysicalCircle;
-import games.World;
 import genetics.DNA;
 import helpers.DoubleMath;
+import helpers.PhysicalCircle;
+import neuralNetwork.NeuralNet;
+import neuralNetwork.Stage;
 
-import java.awt.Color;
-import java.awt.Graphics;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
-
-import neuralNetwork.NeuralNet;
-import neuralNetwork.Stage;
 
 public class Player {
 
@@ -106,7 +103,7 @@ public class Player {
     /**
      * Movement, aging and collisions
      *
-     * @param world reference to the world
+     * @param game reference to the GameInterface
      * @return true when snake died that round.
      */
     public boolean update(SnakeGame game) {
@@ -215,7 +212,7 @@ public class Player {
     /**
      * Main calculation
      *
-     * @param world reference to the world for environment information
+     * @param GameInterface reference to the GameInterface for environment information
      * @return angle increment to move
      */
     public double brain(SnakeGame game) {

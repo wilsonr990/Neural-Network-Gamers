@@ -6,7 +6,7 @@ import players.Player;
 import java.util.LinkedList;
 
 public interface Game {
-    World getWorld();
+    GameInterface getGameInterface();
     void reset();
     void update(int width, int height);
     LinkedList<PhysicalCircle> getDrawables();
