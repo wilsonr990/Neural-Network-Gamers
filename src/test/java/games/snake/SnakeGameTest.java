@@ -1,5 +1,7 @@
 package games.snake;
 
+import games.view.Nibble;
+import games.view.Wall;
 import helpers.PhysicalCircle;
 import org.junit.Assert;
 import org.junit.Test;
@@ -14,16 +16,17 @@ public class SnakeGameTest {
         SnakeGame game = new SnakeGame();
 
         // just created
-        LinkedList<PhysicalCircle> nibbles = game.getNibbles();
+        LinkedList<Nibble> nibbles = game.getNibbles();
         Set<Snake> snakes = game.getSnakes();
+        LinkedList<Wall> walls = game.getWalls();
         Assert.assertEquals(4, nibbles.size());
+        Assert.assertEquals(4, walls.size());
         Assert.assertEquals(0, snakes.size());
 
         // onReset
         game.reset();
-        nibbles = game.getNibbles();
-        snakes = game.getSnakes();
         Assert.assertEquals(4, nibbles.size());
+        Assert.assertEquals(4, walls.size());
         Assert.assertEquals(0, snakes.size());
     }
 
@@ -34,16 +37,18 @@ public class SnakeGameTest {
         // adding a Player creates a snake in the game
         Player player = new Player(null, game);
         game.addPlayer(player);
-        LinkedList<PhysicalCircle> nibbles = game.getNibbles();
         Set<Snake> snakes = game.getSnakes();
-        Assert.assertEquals(4, nibbles.size());
         Assert.assertEquals(1, snakes.size());
+        // Same player
+        game.addPlayer(player);
+        Assert.assertEquals(1, snakes.size());
+        // Add another player
+        player = new Player(null, game);
+        game.addPlayer(player);
+        Assert.assertEquals(2, snakes.size());
 
         // onReset players are removed
         game.reset();
-        nibbles = game.getNibbles();
-        snakes = game.getSnakes();
-        Assert.assertEquals(4, nibbles.size());
         Assert.assertEquals(0, snakes.size());
     }
 }

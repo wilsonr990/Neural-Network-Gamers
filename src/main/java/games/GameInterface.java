@@ -1,27 +1,21 @@
 package games;
 
-import gameEngine.EngineLoop;
-import games.Game;
-import helpers.PhysicalCircle;
-import games.GameInterface;
+import games.view.Drawable;
 
-import java.awt.Color;
-import java.awt.Graphics;
-import java.util.LinkedList;
+import java.awt.*;
+import java.util.*;
+import java.util.List;
 
-public class GameInterface {
-    Game game;
-    private LinkedList<PhysicalCircle> drawables = new LinkedList<PhysicalCircle>();
+public class GameInterface implements Drawable{
+    private List<Drawable> drawables = new LinkedList<Drawable>();
 
-    public GameInterface(Game game) {
-        this.game = game;
+    public GameInterface(List<Drawable> drawables) {
+        this.drawables = drawables;
     }
 
     public void draw(Graphics g) {
-        drawables = game.getDrawables();
-        g.setColor(Color.RED);
-        for (PhysicalCircle object : drawables) {
-            g.fillOval((int) (object.x - object.rad), (int) (object.y - object.rad), (int) (2 * object.rad + 1), (int) (2 * object.rad + 1));
+        for (Drawable object : drawables) {
+            object.draw(g);
         }
     }
 }

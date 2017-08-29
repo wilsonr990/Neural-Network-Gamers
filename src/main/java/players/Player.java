@@ -3,6 +3,7 @@ package players;
 import gameEngine.EngineLoop;
 import games.Game;
 import games.snake.SnakeGame;
+import games.view.Nibble;
 import genetics.DNA;
 import helpers.DoubleMath;
 import helpers.PhysicalCircle;
@@ -11,8 +12,8 @@ import neuralNetwork.Stage;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Random;
 
 public class Player {
@@ -173,7 +174,7 @@ public class Player {
             }
         }
         score += nibbleEatCount * nibblebonus;
-        game.newNibble(nibbleEatCount);
+        game.createNibbles(nibbleEatCount);
         game.removeNibbles(nibblesToRemove);
 
         // health / hunger:
@@ -212,7 +213,7 @@ public class Player {
     /**
      * Main calculation
      *
-     * @param GameInterface reference to the GameInterface for environment information
+     * @param game reference to the GameInterface for environment information
      * @return angle increment to move
      */
     public double brain(SnakeGame game) {
@@ -226,7 +227,7 @@ public class Player {
         input = updateVisualInput(input, snakeSegments, 1);
         // walls:
         /*
-		 * (This should be replaced by a better algorithm) It is basically a
+         * (This should be replaced by a better algorithm) It is basically a
 		 * brute force attempt converting the continuous border lines into many
 		 * PhysicalCirle objects to apply the same algorithm When someone comes
 		 * up with a better algorithm, please let me know :)
@@ -279,9 +280,10 @@ public class Player {
      * @param type    Thing-Type: 0: Wall, 1: Player, 2: Nibble
      * @return Updated input array
      */
-    private Thing[] updateVisualInput(Thing input[], List<PhysicalCircle> objects, int type) {
+    private Thing[] updateVisualInput(Thing input[], Collection objects, int type) {
         PhysicalCircle head = snakeSegments.get(0);
-        for (PhysicalCircle n : objects) {
+        for (Object obj : objects) {
+            PhysicalCircle n = (PhysicalCircle) obj;
             if (head == n)
                 continue;
             double a = DoubleMath.signedDoubleModulo(head.getAngleTo(n) - angle, Math.PI * 2);
