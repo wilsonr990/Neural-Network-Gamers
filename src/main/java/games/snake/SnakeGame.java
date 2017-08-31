@@ -78,6 +78,8 @@ public class SnakeGame implements Game {
             int y = (int) (random.nextDouble() * (getHeight() - 2 * EngineLoop.globalCircleRadius) + EngineLoop.globalCircleRadius);
             Snake snake = new Snake(new Point(x, y));
             snakes.put(snake, player);
+
+            player.startPlaying(snake);
         }
     }
 

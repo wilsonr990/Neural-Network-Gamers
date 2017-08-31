@@ -16,10 +16,13 @@ public class Snake {
     private ArrayList<PhysicalCircle> snakeSegments = new ArrayList<PhysicalCircle>(100);
     private double health;
     SnakeBody body;
+    private double angle;
 
     public Snake(Point p) {
         health = healthbonus * 3 / 2;
         snakeSegments.add(new PhysicalCircle(p.x, p.y, EngineLoop.globalCircleRadius));
+        this.angle = Math.atan2(p.y, p.x);
+
         body = new SnakeBody();
     }
 
@@ -48,5 +51,13 @@ public class Snake {
 
     public int getLength() {
         return snakeSegments.size();
+    }
+
+    public ArrayList<PhysicalCircle> getSegments() {
+        return snakeSegments;
+    }
+
+    public double getAngle() {
+        return angle;
     }
 }

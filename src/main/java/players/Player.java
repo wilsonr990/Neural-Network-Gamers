@@ -62,28 +62,20 @@ public class Player {
      */
 
     public Player(DNA dna, Game game) {
-
-        random.setSeed(random.nextLong());
-        double x = random.nextDouble() * (game.getWidth() - 2 * wallCollisionThreshold - 2 * EngineLoop.globalCircleRadius) + wallCollisionThreshold
-                + EngineLoop.globalCircleRadius;
-        random.setSeed(random.nextLong());
-        double y = random.nextDouble() * (game.getHeight() - 2 * wallCollisionThreshold - 2 * EngineLoop.globalCircleRadius) + wallCollisionThreshold
-                + EngineLoop.globalCircleRadius;
-
         int dnalength = NeuralNet.calcNumberOfCoeffs(stageSizes, isNNSymmetric) + 1;
         if (dna == null) {
             this.dna = new DNA(false, dnalength);
         } else {
             this.dna = dna;
         }
-        snakeSegments.clear();
-        for (int i = 0; i < 1; i++) {
-            snakeSegments.add(new PhysicalCircle(x, y, EngineLoop.globalCircleRadius));
-        }
-        this.angle = Math.atan2(game.getHeight() / 2 - y, game.getWidth() / 2 - x);
         // setup brain:
         brainNet = new NeuralNet(stageSizes);
         reloadFromDNA();
+    }
+
+    public void startPlaying(Snake snake) {
+        snakeSegments = snake.getSegments();
+        this.angle = snake.getAngle();
         score = 0;
         deathFade = 180;
         isDead = false;
@@ -170,7 +162,6 @@ public class Player {
         for (Nibble nibble : game.getNibbles()) {
             if (head.isColliding(nibble, -10)) {
                 score += game.calcValue(nibble);
-                snakeSegments.add(new PhysicalCircle(snakeSegments.get(snakeSegments.size() - 1).x, snakeSegments.get(snakeSegments.size() - 1).y, nibble.rad));
                 nibblesToRemove.add(nibble);
                 nibbleEatCount++;
                 snake.eat(nibble);
