@@ -105,8 +105,8 @@ public class SnakeGame implements Game {
             n.collideWall(50, 50, w - 50, h - 50);
         }
         for (Snake s : snakes.keySet()) {
-            snakes.get(s).update(this, s);
             s.update();
+            snakes.get(s).update(this, s);
         }
     }
 

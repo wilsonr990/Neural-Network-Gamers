@@ -56,10 +56,6 @@ public class MainComponent extends JComponent{
             engineLoop.players.getFirst().brainNet.display(g, 0, game.getWidth(), game.getHeight());
         }
         // players:
-        synchronized (engineLoop.players) {
-            for (Player s : engineLoop.players)
-                s.draw(g);
-            game.getGameInterface().draw(g);
-        }
+        game.getGameInterface().draw(g);
     }
 }

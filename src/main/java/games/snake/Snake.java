@@ -1,29 +1,23 @@
 package games.snake;
 
-import gameEngine.EngineLoop;
-import games.uiTemplates.Nibble;
 import helpers.PhysicalCircle;
 
 import java.awt.*;
 import java.util.ArrayList;
 
 public class Snake {
-
     // scoring constants:
-    private static final double nibblebonus = 20;
     private static final int healthbonus = 10; // Added each time snake eats
     private static final double healthdecrement = .02; // decremented each loop
-    private ArrayList<PhysicalCircle> snakeSegments = new ArrayList<PhysicalCircle>(100);
     private double health;
-    SnakeBody body;
     private double angle;
+    SnakeBody body;
 
     public Snake(Point p) {
         health = healthbonus * 3 / 2;
-        snakeSegments.add(new PhysicalCircle(p.x, p.y, EngineLoop.globalCircleRadius));
         this.angle = Math.atan2(p.y, p.x);
 
-        body = new SnakeBody();
+        body = new SnakeBody(p);
     }
 
     public boolean isAlive() {
@@ -32,6 +26,9 @@ public class Snake {
 
     public void update() {
         health -= healthdecrement;
+        if (!isAlive()) {
+            body.deathAnimation();
+        }
     }
 
     public SnakeBody getBody() {
@@ -40,9 +37,9 @@ public class Snake {
 
     public void eat(Food n) {
         health += n.getNutritiveValue();
-        if (health > healthbonus * 3)
-            health = healthbonus * 3;
-        snakeSegments.add(new PhysicalCircle(snakeSegments.get(snakeSegments.size() - 1).x, snakeSegments.get(snakeSegments.size() - 1).y, EngineLoop.globalCircleRadius));
+//        if (health > healthbonus * 3)
+//            health = healthbonus * 3;
+        body.addSegment();
     }
 
     public double getHealth() {
@@ -50,14 +47,27 @@ public class Snake {
     }
 
     public int getLength() {
-        return snakeSegments.size();
+        return body.getSegments().size();
     }
 
     public ArrayList<PhysicalCircle> getSegments() {
-        return snakeSegments;
+        return body.getSegments();
     }
 
     public double getAngle() {
         return angle;
+    }
+
+    public void setColor(float color) {
+        body.setColor(color);
+    }
+
+    public boolean isVisible() {
+        return body.isVisible();
+    }
+
+    @Deprecated
+    public void doDamage(int i) {
+        health -= i;
     }
 }

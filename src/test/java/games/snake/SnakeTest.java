@@ -9,11 +9,12 @@ import java.awt.*;
 public class SnakeTest {
     @Test
     public void newSnakesAreAliveAndHaveOnlyOneSegment() {
-        Snake snake = new Snake(new Point(0, 0));
+        Snake snake = new Snake(new Point(1, 1));
 
         Assert.assertTrue(snake.isAlive());
         Assert.assertEquals(15, snake.getHealth(), 0.1);
         Assert.assertEquals(1, snake.getLength());
+        Assert.assertEquals(Math.PI/4, snake.getAngle(), 0.1);
     }
 
     @Test

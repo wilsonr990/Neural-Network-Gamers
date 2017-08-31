@@ -197,7 +197,7 @@ public class EngineLoop implements Runnable {
                         Iterator<Player> it = players.iterator();
                         while (it.hasNext()) {
                             Player s = it.next();
-                            if (s.deathFade <= 0) {
+                            if (s.ended) {
                                 game.removePlayer(s);
                                 it.remove();
                             }

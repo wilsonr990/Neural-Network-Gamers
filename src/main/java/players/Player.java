@@ -37,7 +37,6 @@ public class Player {
     public static final int healthbonus = 10; // Added each time snake eats
 
     // misc:
-    public final boolean displayCuteEyes = false; // try it out yourself :)
     public final boolean snakeInertia = false;
 
     // basic snake attributes:
@@ -49,10 +48,9 @@ public class Player {
     public double score;
     public boolean isDead;
     public float hue;
-    public double deathFade = 180;
     public double health;
-    static Random random = new Random(System.currentTimeMillis());
     private boolean lastUpdate;
+    public boolean ended = false;
 
     /**
      * Initializes a new snake with given DNA
@@ -75,9 +73,9 @@ public class Player {
 
     public void startPlaying(Snake snake) {
         snakeSegments = snake.getSegments();
+        snake.setColor(hue);
         this.angle = snake.getAngle();
         score = 0;
-        deathFade = 180;
         isDead = false;
         age = 0;
     }
@@ -101,8 +99,10 @@ public class Player {
      * @return true when snake died that round.
      */
     public boolean update(SnakeGame game, Snake snake) {
+        if(!snake.isVisible()){
+            ended=true;
+        }
         if (isDead) {
-            deathFade -= .6;
             lastUpdate = true;
             return true;
         }
@@ -118,18 +118,22 @@ public class Player {
         // collision with wall:
         if (head.x - head.rad < wallCollisionThreshold) {
             score /= 2;
+            snake.doDamage(100);
             isDead = true;
         }
         if (head.x + head.rad > game.getWidth() - wallCollisionThreshold) {
             score /= 2;
+            snake.doDamage(100);
             isDead = true;
         }
         if (head.y - head.rad < wallCollisionThreshold) {
             score /= 2;
+            snake.doDamage(100);
             isDead = true;
         }
         if (head.y + head.rad > game.getHeight() - wallCollisionThreshold) {
             score /= 2;
+            snake.doDamage(100);
             isDead = true;
         }
         // Main movement:
@@ -153,6 +157,7 @@ public class Player {
             if (i > 1 && head.isColliding(c, 0)) {
                 isDead = true;
                 score /= 2;
+                snake.doDamage(100);
                 break;
             }
         }
@@ -297,39 +302,5 @@ public class Player {
             }
         }
         return input;
-    }
-
-    /**
-     * Draws the snake to Graphics
-     *
-     * @param g Graphics object to draw to
-     */
-    public void draw(Graphics g) {
-        // Player body
-        int alpha = (int) deathFade;
-        for (int i = 0; i < snakeSegments.size(); i++) {
-            Color c = new Color(Color.HSBtoRGB(hue, 1 - (float) i / ((float) snakeSegments.size() + 1f), 1));
-            g.setColor(new Color(c.getRed(), c.getGreen(), c.getBlue(), alpha));
-            PhysicalCircle p = snakeSegments.get(i);
-            g.fillOval((int) (p.x - p.rad), (int) (p.y - p.rad), (int) (2 * p.rad + 1), (int) (2 * p.rad + 1));
-        }
-        // Cute Eyes. A bit computationally expensive, so can be turned of
-        if (displayCuteEyes) {
-
-            PhysicalCircle p = snakeSegments.get(0); // get head
-            double dist = p.rad / 2.3;
-            double size = p.rad / 3.5;
-            g.setColor(new Color(255, 255, 255, alpha));
-            g.fillOval((int) (p.x + p.vy * dist / p.getAbsoluteVelocity() - size), (int) (p.y - p.vx * dist / p.getAbsoluteVelocity() - size),
-                    (int) (size * 2 + 1), (int) (size * 2 + 1));
-            g.fillOval((int) (p.x - p.vy * dist / p.getAbsoluteVelocity() - size), (int) (p.y + p.vx * dist / p.getAbsoluteVelocity() - size),
-                    (int) (size * 2 + 1), (int) (size * 2 + 1));
-            size = p.rad / 6;
-            g.setColor(new Color(0, 0, 0, alpha));
-            g.fillOval((int) (p.x + p.vy * dist / p.getAbsoluteVelocity() - size), (int) (p.y - p.vx * dist / p.getAbsoluteVelocity() - size),
-                    (int) (size * 2 + 1), (int) (size * 2 + 1));
-            g.fillOval((int) (p.x - p.vy * dist / p.getAbsoluteVelocity() - size), (int) (p.y + p.vx * dist / p.getAbsoluteVelocity() - size),
-                    (int) (size * 2 + 1), (int) (size * 2 + 1));
-        }
     }
 }
