@@ -1,7 +1,5 @@
 package players;
 
-import gameEngine.EngineLoop;
-import games.Game;
 import games.snake.Snake;
 import games.snake.SnakeGame;
 import games.uiTemplates.Nibble;
@@ -11,44 +9,41 @@ import helpers.PhysicalCircle;
 import neuralNetwork.NeuralNet;
 import neuralNetwork.Stage;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
-import java.util.Random;
 
 public class Player {
 
     // Movement constants:
-    public static final double maximumForwardSpeed = 5;
-    public static final double maximumAngularSpeed = Math.PI / 32d;
-    public static final double wallCollisionThreshold = 4;
+    private static final double maximumForwardSpeed = 5;
+    private static final double maximumAngularSpeed = Math.PI / 32d;
+    private static final double wallCollisionThreshold = 4;
     // view constants:
-    public static final double maximumSightDistance = 300;
-    public static final double fieldOfView = Math.PI * 2 / 3;
+    private static final double maximumSightDistance = 300;
+    private static final double fieldOfView = Math.PI * 2 / 3;
     // neural net constants:
-    public static final int FOVDIVISIONS = 8;
-    public static final int FIRSTSTAGESIZE = FOVDIVISIONS * 2 * 3;
-    public static final int stageSizes[] = new int[]{FIRSTSTAGESIZE, 16, 16, 2};
-    public static final boolean isNNSymmetric = false;
+    private static final int FOVDIVISIONS = 8;
+    private static final int FIRSTSTAGESIZE = FOVDIVISIONS * 2 * 3;
+    private static final int[] stageSizes = new int[]{FIRSTSTAGESIZE, 16, 16, 2};
+    private static final boolean isNNSymmetric = false;
 
     // scoring constants:
-    public static final double nibblebonus = 20;
+    private static final double nibblebonus = 20;
     public static final int healthbonus = 10; // Added each time snake eats
 
     // misc:
-    public final boolean snakeInertia = false;
-
+    private boolean snakeInertia = false;
     // basic snake attributes:
-    public ArrayList<PhysicalCircle> snakeSegments = new ArrayList<PhysicalCircle>(100);
+    private ArrayList<PhysicalCircle> snakeSegments = new ArrayList<PhysicalCircle>(100);
     public DNA dna;
     public NeuralNet brainNet;
-    public double age = 0;
-    public double angle;
-    public double score;
-    public boolean isDead;
-    public float hue;
-    public double health;
+    private double age = 0;
+    private double angle;
+    private double score;
+    private boolean isDead;
+    private float hue;
+    private double health;
     private boolean lastUpdate;
     public boolean ended = false;
 
@@ -56,10 +51,9 @@ public class Player {
      * Initializes a new snake with given DNA
      *
      * @param dna  if null, it generates a random new DNA
-     * @param game
      */
 
-    public Player(DNA dna, Game game) {
+    public Player(DNA dna) {
         int dnalength = NeuralNet.calcNumberOfCoeffs(stageSizes, isNNSymmetric) + 1;
         if (dna == null) {
             this.dna = new DNA(false, dnalength);
@@ -83,7 +77,7 @@ public class Player {
     /**
      * reloads the network and the color from DNA
      */
-    public void reloadFromDNA() {
+    private void reloadFromDNA() {
         if (isNNSymmetric)
             brainNet.loadCoeffsSymmetrical(this.dna.data);
         else
@@ -95,16 +89,15 @@ public class Player {
      * Movement, aging and collisions
      *
      * @param game  reference to the GameInterface
-     * @param snake
-     * @return true when snake died that round.
+     * @param snake representation of player in game
      */
-    public boolean update(SnakeGame game, Snake snake) {
+    public void update(SnakeGame game, Snake snake) {
         if(!snake.isVisible()){
             ended=true;
         }
         if (isDead) {
             lastUpdate = true;
-            return true;
+            return;
         }
         age += .1;
         double slowdown = 49d / (48d + snakeSegments.size());
@@ -162,7 +155,7 @@ public class Player {
             }
         }
         // Check eaten nibbles:
-        LinkedList<PhysicalCircle> nibblesToRemove = new LinkedList<PhysicalCircle>();
+        LinkedList<Nibble> nibblesToRemove = new LinkedList<Nibble>();
         int nibbleEatCount = 0;
         for (Nibble nibble : game.getNibbles()) {
             if (head.isColliding(nibble, -10)) {
@@ -183,7 +176,6 @@ public class Player {
             score /= 2;
         }
         lastUpdate = !isDead;
-        return !isDead;
     }
 
     /**
@@ -204,8 +196,8 @@ public class Player {
      * array
      */
     public class Thing {
-        public double distance = maximumSightDistance;
-        public int type = 0;
+        double distance = maximumSightDistance;
+        int type = 0;
         // Wall = 0;
         // Player = 1;
         // Nibble = 2;
@@ -219,13 +211,13 @@ public class Player {
      */
     public double brain(SnakeGame game) {
         // init input vector:
-        Thing input[] = new Thing[FOVDIVISIONS * 2];
+        Thing[] input = new Thing[FOVDIVISIONS * 2];
         for (int i = 0; i < FOVDIVISIONS * 2; i++)
             input[i] = new Thing();
         // nibbles:
-        input = updateVisualInput(input, game.getNibbles(), 2);
+        updateVisualInput(input, game.getNibbles(), 2);
         // snake:
-        input = updateVisualInput(input, snakeSegments, 1);
+        updateVisualInput(input, snakeSegments, 1);
         // walls:
         /*
          * (This should be replaced by a better algorithm) It is basically a
@@ -243,10 +235,10 @@ public class Player {
             walls.add(new PhysicalCircle(0, y, 1));
             walls.add(new PhysicalCircle(game.getWidth(), y, 1));
         }
-        input = updateVisualInput(input, walls, 0);
+        updateVisualInput(input, walls, 0);
 
         // convert to input vector for neural net
-        double stageA[] = new double[FIRSTSTAGESIZE]; // zeros initialized ;)
+        double[] stageA = new double[FIRSTSTAGESIZE]; // zeros initialized ;)
         if (isNNSymmetric) {
             for (int i = 0; i < FOVDIVISIONS; i++) {
                 stageA[input[i].type * FOVDIVISIONS + i] = Stage.signalMultiplier * (maximumSightDistance - input[i].distance) / maximumSightDistance;
@@ -260,7 +252,7 @@ public class Player {
                         * (maximumSightDistance - input[i + FOVDIVISIONS].distance) / maximumSightDistance;
             }
         }
-        double output[] = brainNet.calc(stageA);
+        double[] output = brainNet.calc(stageA);
         double delta = output[0] - output[1];
         double angleIncrement = 10 * maximumAngularSpeed / Stage.signalMultiplier * delta;
         if (angleIncrement > maximumAngularSpeed)
@@ -281,7 +273,7 @@ public class Player {
      * @param type    Thing-Type: 0: Wall, 1: Player, 2: Nibble
      * @return Updated input array
      */
-    private Thing[] updateVisualInput(Thing input[], Collection objects, int type) {
+    private void updateVisualInput(Thing[] input, Collection objects, int type) {
         PhysicalCircle head = snakeSegments.get(0);
         for (Object obj : objects) {
             PhysicalCircle n = (PhysicalCircle) obj;
@@ -301,6 +293,5 @@ public class Player {
                 }
             }
         }
-        return input;
     }
 }

@@ -1,4 +1,5 @@
 import gameEngine.EngineLoop;
+import gameEngine.view.EngineUI;
 import games.Game;
 import games.snake.SnakeGame;
 
@@ -12,10 +13,11 @@ public class MainWindow{
 	/**
 	 * Simple JFrame as user interface
 	 */
-	public MainWindow() {
-		Game snakeGame = new SnakeGame();
+	private MainWindow() {
+		EngineUI ui = new EngineUI();
 
-		EngineLoop loop = new EngineLoop(snakeGame);
+		Game snakeGame = new SnakeGame();
+		EngineLoop loop = new EngineLoop(snakeGame, ui);
 		loop.start();
 	}
 

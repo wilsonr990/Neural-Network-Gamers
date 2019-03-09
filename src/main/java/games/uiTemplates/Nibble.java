@@ -6,7 +6,7 @@ import helpers.PhysicalCircle;
 import java.awt.*;
 
 public class Nibble extends PhysicalCircle implements Drawable, Food {
-    public static final int healthbonus = 10; // Added each time snake eats
+    private static final int healthbonus = 10; // Added each time snake eats
 
     public Nibble(double x, double y, double rad) {
         super(x, y, rad);

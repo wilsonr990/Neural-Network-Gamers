@@ -9,11 +9,11 @@ import java.util.ArrayList;
 
 public class SnakeBody implements Drawable {
     private ArrayList<PhysicalCircle> snakeSegments = new ArrayList<PhysicalCircle>(100);
-    public double deathFade = 180;
-    public final boolean displayCuteEyes = false; // try it out yourself :)
+    private double deathFade = 180;
+    private final boolean displayCuteEyes = false; // try it out yourself :)
     private float hue;
 
-    public SnakeBody(Point p) {
+    SnakeBody(Point p) {
         snakeSegments.add(new PhysicalCircle(p.x, p.y, EngineLoop.globalCircleRadius));
     }
 
@@ -30,39 +30,38 @@ public class SnakeBody implements Drawable {
         if (displayCuteEyes) {
             PhysicalCircle p = snakeSegments.get(0); // get head
             double dist = p.rad / 2.3;
-            double size = p.rad / 3.5;
             g.setColor(new Color(255, 255, 255, alpha));
-            g.fillOval((int) (p.x + p.vy * dist / p.getAbsoluteVelocity() - size), (int) (p.y - p.vx * dist / p.getAbsoluteVelocity() - size),
-                    (int) (size * 2 + 1), (int) (size * 2 + 1));
-            g.fillOval((int) (p.x - p.vy * dist / p.getAbsoluteVelocity() - size), (int) (p.y + p.vx * dist / p.getAbsoluteVelocity() - size),
-                    (int) (size * 2 + 1), (int) (size * 2 + 1));
-            size = p.rad / 6;
+            drawEyes(g, p, dist, p.rad / 3.5);
             g.setColor(new Color(0, 0, 0, alpha));
-            g.fillOval((int) (p.x + p.vy * dist / p.getAbsoluteVelocity() - size), (int) (p.y - p.vx * dist / p.getAbsoluteVelocity() - size),
-                    (int) (size * 2 + 1), (int) (size * 2 + 1));
-            g.fillOval((int) (p.x - p.vy * dist / p.getAbsoluteVelocity() - size), (int) (p.y + p.vx * dist / p.getAbsoluteVelocity() - size),
-                    (int) (size * 2 + 1), (int) (size * 2 + 1));
+            drawEyes(g, p, dist, p.rad / 6);
         }
 
     }
 
-    public void deathAnimation() {
+    private void drawEyes(Graphics g, PhysicalCircle p, double dist, double size) {
+        g.fillOval((int) (p.x + p.vy * dist / p.getAbsoluteVelocity() - size), (int) (p.y - p.vx * dist / p.getAbsoluteVelocity() - size),
+                (int) (size * 2 + 1), (int) (size * 2 + 1));
+        g.fillOval((int) (p.x - p.vy * dist / p.getAbsoluteVelocity() - size), (int) (p.y + p.vx * dist / p.getAbsoluteVelocity() - size),
+                (int) (size * 2 + 1), (int) (size * 2 + 1));
+    }
+
+    void deathAnimation() {
         deathFade -= .6;
     }
 
-    public void setColor(float color) {
+    void setColor(float color) {
         this.hue = color;
     }
 
-    public void addSegment() {
+    void addSegment() {
         snakeSegments.add(new PhysicalCircle(snakeSegments.get(snakeSegments.size() - 1).x, snakeSegments.get(snakeSegments.size() - 1).y, EngineLoop.globalCircleRadius));
     }
 
-    public ArrayList<PhysicalCircle> getSegments() {
+    ArrayList<PhysicalCircle> getSegments() {
         return snakeSegments;
     }
 
-    public boolean isVisible() {
+    boolean isVisible() {
         return deathFade > 0;
     }
 }

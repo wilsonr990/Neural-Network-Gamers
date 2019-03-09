@@ -34,7 +34,7 @@ public class SnakeGameTest {
         SnakeGame game = new SnakeGame();
 
         // adding a Player creates a snake in the game
-        Player player = new Player(null, game);
+        Player player = new Player(null);
         game.addPlayer(player);
         Set<Snake> snakes = game.getSnakes();
         Assert.assertEquals(1, snakes.size());
@@ -42,7 +42,7 @@ public class SnakeGameTest {
         game.addPlayer(player);
         Assert.assertEquals(1, snakes.size());
         // Add another player
-        player = new Player(null, game);
+        player = new Player(null);
         game.addPlayer(player);
         Assert.assertEquals(2, snakes.size());
 

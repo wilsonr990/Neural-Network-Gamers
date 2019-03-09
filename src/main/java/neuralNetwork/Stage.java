@@ -4,11 +4,11 @@ public class Stage {
 	
 	public static final double signalMultiplier = .1;
 	
-	public Stage prev;
-	public double output[];
-	public byte coeffs[][];
+	private Stage prev;
+	double[] output;
+	byte[][] coeffs;
 	
-	public Stage(Stage prev, int size){
+	Stage(Stage prev, int size){
 		this.prev = prev;
 		output = new double[size];
 		if (prev != null)
@@ -19,7 +19,7 @@ public class Stage {
 	/**
 	 * calculates the outputs based on the input values
 	 */
-	public void calc(){
+	void calc(){
 		if (prev == null) return;
 		for (int i = 0; i < coeffs.length; i++){
 			double sum = 0;
@@ -30,20 +30,20 @@ public class Stage {
 			output[i] = sigmoid(sum);
 		}
 	}
-	public static double sigmoid(double x) {
+	private static double sigmoid(double x) {
 		return signalMultiplier/(1+Math.exp(-x/2d));  //range: 0 .. multiplier
 	}
 	public String toString(){
-		String k = "[";
-		for (int i = 0; i< coeffs.length; i++){
-			k += "[";
-			for (int j = 0; j < coeffs[0].length; j++){
-				k += Byte.toString(coeffs[i][j])+" ";
+		StringBuilder k = new StringBuilder("[");
+		for (byte[] coeff : coeffs) {
+			k.append("[");
+			for (int j = 0; j < coeffs[0].length; j++) {
+				k.append(coeff[j]).append(" ");
 			}
-			k += "]\n ";
+			k.append("]\n ");
 		}
-		k+= "]\n";
-		return k;
+		k.append("]\n");
+		return k.toString();
 	}
 
 }

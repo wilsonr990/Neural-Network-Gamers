@@ -8,8 +8,8 @@ public class DNA {
     /**
      * Class to model DNA strands, mutation and crossover
      */
-    public Random random = new Random();
-    public byte data[];
+    private Random random = new Random();
+    public byte[] data;
 
     public DNA(boolean empty, int size) {
         data = new byte[size];
@@ -37,7 +37,7 @@ public class DNA {
     public DNA crossoverNoise(DNA other, double mutationprob) {  //byte-wise, noise applied to each value
         DNA newdna = new DNA(true, data.length);
         int numswaps = data.length / 10;
-        int swaps[] = new int[numswaps + 1];
+        int[] swaps = new int[numswaps + 1];
         for (int i = 0; i < swaps.length - 1; i++) {
             swaps[i] = (int) Math.floor(Math.random() * data.length);
         }
@@ -79,29 +79,11 @@ public class DNA {
     public DNA crossover(DNA other, double mutationprob) {
         DNA newdna = new DNA(true, data.length);
         int numswaps = data.length / 8;
-        int swaps[] = new int[numswaps + 1];
+        int[] swaps = new int[numswaps + 1];
         for (int i = 0; i < swaps.length - 1; i++) {
             swaps[i] = (int) Math.floor(Math.random() * 8 * data.length);
         }
-        swaps[numswaps] = 8 * data.length;  //save last
-        Arrays.sort(swaps);
-        int swapidx = 0;
-        boolean that = true;
-        for (int i = 0; i < 8 * data.length; i++) {
-            if (i >= swaps[swapidx]) {
-                swapidx++;
-                that = !that;
-            }
-            int bit = 0;
-            if (that) {
-                bit = ((this.data[i / 8] >> (i % 8)) & 1);
-            } else {
-                bit = ((other.data[i / 8] >> (i % 8)) & 1);
-            }
-            if (Math.random() < mutationprob) bit = 1 - bit;
-            newdna.data[i / 8] |= (bit << (i % 8));
-        }
-        return newdna;
+        return getDna(other, mutationprob, newdna, numswaps, swaps);
     }
 
     /**
@@ -109,14 +91,18 @@ public class DNA {
      * Process is only done byte-wise, so less noise is added
      * Bits flip according to mutation probability
      */
-    public DNA crossoverBytewise(DNA other, double mutationprob) {
-        DNA newdna = new DNA(true, data.length);
-        int numswaps = data.length / 8;
-        int swaps[] = new int[numswaps + 1];
+    public DNA crossoverBytewise(DNA other, double mutationProb) {
+        DNA newDNA = new DNA(true, data.length);
+        int numSwaps = data.length / 8;
+        int[] swaps = new int[numSwaps + 1];
         for (int i = 0; i < swaps.length - 1; i++) {
             swaps[i] = 8 * (int) Math.floor(Math.random() * data.length);
         }
-        swaps[numswaps] = 8 * data.length;  //save last
+        return getDna(other, mutationProb, newDNA, numSwaps, swaps);
+    }
+
+    private DNA getDna(DNA other, double mutationProb, DNA newDNA, int numSwaps, int[] swaps) {
+        swaps[numSwaps] = 8 * data.length;  //save last
         Arrays.sort(swaps);
         int swapidx = 0;
         boolean that = true;
@@ -125,28 +111,27 @@ public class DNA {
                 swapidx++;
                 that = !that;
             }
-            int bit = 0;
+            int bit;
             if (that) {
                 bit = ((this.data[i / 8] >> (i % 8)) & 1);
             } else {
                 bit = ((other.data[i / 8] >> (i % 8)) & 1);
             }
-            if (Math.random() < mutationprob) bit = 1 - bit;
-            newdna.data[i / 8] |= (bit << (i % 8));
+            if (Math.random() < mutationProb) bit = 1 - bit;
+            newDNA.data[i / 8] |= (bit << (i % 8));
         }
-        return newdna;
+        return newDNA;
     }
 
     public void saveToFile(int bestscore) throws IOException {
-//        FileOutputStream fos = new FileOutputStream(String.valueOf(bestscore) + ".out");
-        FileOutputStream fos = new FileOutputStream("new4.out");
+        FileOutputStream fos = new FileOutputStream(String.valueOf(bestscore) + ".out");
         fos.write(data, 0, data.length);
         fos.flush();
         fos.close();
     }
 
-    public void loadFromFile() throws IOException {
-        File inputFile = new File("new4.out");
+    private void loadFromFile() throws IOException {
+        File inputFile = new File("best.out");
         FileInputStream fis = new FileInputStream(inputFile);
         data = new byte[(int) inputFile.length()];
         fis.read(data, 0, data.length);

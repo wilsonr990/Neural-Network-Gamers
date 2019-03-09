@@ -7,7 +7,7 @@ import java.util.*;
 import java.util.List;
 
 public class GameInterface implements Drawable{
-    private List<Drawable> drawables = new LinkedList<Drawable>();
+    private List<Drawable> drawables;
 
     public GameInterface(List<Drawable> drawables) {
         this.drawables = drawables;

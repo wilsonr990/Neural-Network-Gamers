@@ -17,13 +17,13 @@ public class EngineLoop implements Runnable {
     public long clock;
 
     // main update frequency:
-    public static final long UPDATEPERIOD = 8;
+    private static final long UPDATEPERIOD = 8;
     private final KeyboardListener keyb;
-    public double per = UPDATEPERIOD;
+    private double per = UPDATEPERIOD;
 
     // constants:
     public static final int globalCircleRadius = 20;
-    public static final int numPlayers = 8;
+    private static final int numPlayers = 8;
 
     // Genetics parameter initialization:
     public static double mutationrate = .02;
@@ -31,47 +31,50 @@ public class EngineLoop implements Runnable {
 
     // GameInterface snake players initialization:
     public LinkedList<Player> players = new LinkedList<Player>();
-    public LinkedList<Player> backupPlayers = new LinkedList<Player>(); // to
+    private LinkedList<Player> backupPlayers = new LinkedList<Player>(); // to
     // resume
     // from
     // single
     // mode
 
     // Best:
-    public DNA bestDna = null;
+    private DNA bestDna = null;
     public double bestscore = 0;
 
     // Statistics:
-    public LinkedList<Double> fitnessTimeline = new LinkedList<Double>();
+    public final LinkedList<Double> fitnessTimeline = new LinkedList<Double>();
     public double currentMaxFitness = 0;
 
     // Mode control:
     public boolean singleSnakeModeActive = false;
     public boolean displayStatisticsActive = false;
-    public boolean simulationPaused = false;
+    private boolean simulationPaused = false;
     private long simulationLastMillis;
     private long statisticsLastMillis;
     private Game game;
 
-    public EngineLoop(Game game) {
+    public EngineLoop(Game game, EngineUI ui) {
         keyb = new KeyboardListener();
         this.game = game;
-        ui = new EngineUI(this);
+        this.ui = ui;
+        this.ui.init(this);
+
+        ((SnakeGame)game).prepare(ui.getWidth(), ui.getHeight());
         ui.addKeyListener(keyb);
     }
 
-    public void createFirstGenerationOfPlayers(int n) {
+    private void createFirstGenerationOfPlayers(int n) {
         players.clear();
         game.reset();
         for (int i = 0; i < n; i++) {
-            Player p = new Player(null, game);
+            Player p = new Player(null);
             players.add(p);
             game.addPlayer(p);
         }
         clock = 0;
     }
 
-    public ArrayList<Player> makeMatingpool() {
+    private ArrayList<Player> makeMatingpool() {
         ArrayList<Player> matingpool = new ArrayList<Player>();
         // get maximum fitness:
         double maxscore = 0;
@@ -90,7 +93,7 @@ public class EngineLoop implements Runnable {
         return matingpool;
     }
 
-    public void newPlayers() {
+    private void newPlayers() {
 //        mutationrate = (1-currentMaxFitness/bestscore)*0.1;
         mutationrate = 10 / currentMaxFitness;
         ArrayList<Player> matingpool = makeMatingpool();
@@ -99,7 +102,7 @@ public class EngineLoop implements Runnable {
         DNA parentA = matingpool.get(idx1).dna;
         DNA parentB = matingpool.get(idx2).dna;
 //        Player p = new Player(bestDna.crossoverBytewise(parentB, mutationrate), game);
-        Player p = new Player(parentA.crossoverBytewise(parentB, mutationrate), game);
+        Player p = new Player(parentA.crossoverBytewise(parentB, mutationrate));
         players.add(p);
         game.addPlayer(p);
     }
@@ -125,7 +128,7 @@ public class EngineLoop implements Runnable {
                                 backupPlayers.clear();
                                 backupPlayers.addAll(players);
                                 players.clear();
-                                Player p = new Player(bestDna, game);
+                                Player p = new Player(bestDna);
                                 players.add(p);
                                 game.reset();
                                 game.addPlayer(p);

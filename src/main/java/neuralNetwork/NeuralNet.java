@@ -6,7 +6,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 
 public class NeuralNet {
-	public Stage stages[];
+	private Stage[] stages;
 
 	/**
 	 * C'tor
@@ -16,7 +16,7 @@ public class NeuralNet {
 	 *            {48,16,16,2}.
 	 *            First stage has no nonlinearity
 	 */
-	public NeuralNet(int stageSizes[]) {
+	public NeuralNet(int[] stageSizes) {
 		stages = new Stage[stageSizes.length];
 		Stage prev = null;
 		for (int i = 0; i < stageSizes.length; i++) {
@@ -30,7 +30,7 @@ public class NeuralNet {
 	 * @param coeffs	array with the coefficients ranging -128 to +127.
 	 * Note: no dimension/length check is done, will crash when given wrong sized array! 
 	 */
-	public void loadCoeffs(byte coeffs[]) {
+	public void loadCoeffs(byte[] coeffs) {
 		int idx = 0;
 		for (int s = 1; s < stages.length; s++) {
 			for (int i = 0; i < stages[s].coeffs.length; i++) {
@@ -47,7 +47,7 @@ public class NeuralNet {
 	 * @param coeffs array with the coefficients ranging -128 to +127.
 	 */
 
-	public void loadCoeffsSymmetrical(byte coeffs[]) {
+	public void loadCoeffsSymmetrical(byte[] coeffs) {
 		int idx = 0;
 		for (int s = 1; s < stages.length; s++) {
 			if (stages[s].coeffs.length % 2 == 1) {
@@ -70,10 +70,8 @@ public class NeuralNet {
 	 * @return			output vector
 	 */
 
-	public double[] calc(double input[]) {
-		for (int i = 0; i < input.length; i++) {
-			stages[0].output[i] = input[i];
-		}
+	public double[] calc(double[] input) {
+		System.arraycopy(input, 0, stages[0].output, 0, input.length);
 		for (int i = 1; i < stages.length; i++) {
 			stages[i].calc();
 		}
@@ -89,7 +87,7 @@ public class NeuralNet {
 	 * @return				number of coefficients needed
 	 */
 
-	public static int calcNumberOfCoeffs(int stageSizes[], boolean symmetrical) {
+	public static int calcNumberOfCoeffs(int[] stageSizes, boolean symmetrical) {
 		int sum = 0;
 		if (stageSizes.length < 2)
 			return 0;
@@ -104,11 +102,11 @@ public class NeuralNet {
 	}
 
 	public String toString() {
-		String k = "";
+		StringBuilder k = new StringBuilder();
 		for (int s = 1; s < stages.length; s++) {
-			k += "\nStage " + s + ": \n" + stages[s].toString();
+			k.append("\nStage ").append(s).append(": \n").append(stages[s].toString());
 		}
-		return k;
+		return k.toString();
 	}
 
 	/**
@@ -121,7 +119,7 @@ public class NeuralNet {
 	 */
 	public void display(Graphics g, float alpha, double w, double h) {
 		Graphics2D g2 = (Graphics2D) g;
-		int d = 20;
+		int d;
 
 		// synapses:
 		for (int s = 1; s < stages.length; s++) {
@@ -133,7 +131,7 @@ public class NeuralNet {
 					int c = stages[s].coeffs[i][j];
 					if (Math.abs(c) < 48)
 						continue;
-					g2.setStroke(new BasicStroke(Math.abs(c) * 3 / 129));
+					g2.setStroke(new BasicStroke(Math.abs(c) * 3f / 129f));
 
 					int y1 = (j + 1) * (int) (h / (stages[s - 1].output.length + 1));
 					int y2 = (i + 1) * (int) (h / (stages[s].output.length + 1));

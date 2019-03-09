@@ -2,7 +2,6 @@ package gameEngine.view;
 
 import gameEngine.EngineLoop;
 import games.Game;
-import players.Player;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,7 +10,7 @@ public class MainComponent extends JComponent{
     private EngineLoop engineLoop;  //TODO: delete this dependency
     private Game game;  //TODO: delete this dependency
 
-    public MainComponent(EngineLoop engineLoop, Game game) {
+    MainComponent(EngineLoop engineLoop, Game game) {
         this.engineLoop = engineLoop;
         this.game = game;
     }
@@ -25,14 +24,14 @@ public class MainComponent extends JComponent{
         // Stats:
         if (engineLoop.displayStatisticsActive) {
             g.setColor(Color.DARK_GRAY);
-            g.setFont(new Font("Arial", 0, 64));
-            g.drawString("t = " + Long.toString(engineLoop.clock / 1000), 20, 105);
+            g.setFont(new Font("Arial", Font.PLAIN, 64));
+            g.drawString("t = " + engineLoop.clock / 1000, 20, 105);
 
-            g.drawString("g = " + Integer.toString((int) engineLoop.currentGeneration), 20, 205);
-            g.setFont(new Font("Arial", 0, 32));
-            g.drawString("Mut. Prob.: " + String.format("%1$,.3f", engineLoop.mutationrate), 20, 305);
-            g.drawString("Max fitness: " + Integer.toString((int) engineLoop.currentMaxFitness), 20, 355);
-            g.drawString("Best fitness: " + Integer.toString((int) engineLoop.bestscore), 20, 405);
+            g.drawString("g = " + (int) engineLoop.currentGeneration, 20, 205);
+            g.setFont(new Font("Arial", Font.PLAIN, 32));
+            g.drawString("Mut. Prob.: " + String.format("%1$,.3f", EngineLoop.mutationrate), 20, 305);
+            g.drawString("Max fitness: " + (int) engineLoop.currentMaxFitness, 20, 355);
+            g.drawString("Best fitness: " + (int) engineLoop.bestscore, 20, 405);
 
             // print timeline:
             synchronized (engineLoop.fitnessTimeline) {

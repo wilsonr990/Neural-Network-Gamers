@@ -13,21 +13,22 @@ import java.awt.*;
 import java.util.*;
 
 public class SnakeGame implements Game {
-    public static final int numNibbles = 4;
+    private static final int numNibbles = 8;
     private LinkedList<Nibble> nibbles = new LinkedList<Nibble>();
     private LinkedList<Wall> walls = new LinkedList<Wall>();
 
-    public int height, width;
+    private int height, width;
     // TODO: Just for now player-game interface will be here but it should be moved
-    Map<Snake, Player> snakes = new HashMap<Snake, Player>();
+    private Map<Snake, Player> snakes = new HashMap<Snake, Player>();
 
     public SnakeGame() {
         height = 200;
         width = 300;
-        prepare();
     }
 
-    public void prepare() {
+    public void prepare(int w, int h) {
+        this.width = w;
+        this.height = h;
         createNibbles(numNibbles);
         createWalls();
     }
@@ -52,8 +53,8 @@ public class SnakeGame implements Game {
         }
     }
 
-    public void removeNibbles(LinkedList<PhysicalCircle> rem) {
-        for (PhysicalCircle p : rem) {
+    public void removeNibbles(LinkedList<Nibble> rem) {
+        for (Nibble p : rem) {
             nibbles.remove(p);
         }
     }
@@ -66,7 +67,7 @@ public class SnakeGame implements Game {
         return nibbles;
     }
 
-    public Set<Snake> getSnakes() {
+    Set<Snake> getSnakes() {
         return snakes.keySet();
     }
 
@@ -128,7 +129,8 @@ public class SnakeGame implements Game {
         nibbles.clear();
         snakes.clear();
         walls.clear();
-        prepare();
+        createNibbles(numNibbles);
+        createWalls();
     }
 
     public double getWidth() {

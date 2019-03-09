@@ -11,10 +11,10 @@ public class Snake {
     private static final double healthdecrement = .02; // decremented each loop
     private double health;
     private double angle;
-    SnakeBody body;
+    private SnakeBody body;
 
-    public Snake(Point p) {
-        health = healthbonus * 3 / 2;
+    Snake(Point p) {
+        health = healthbonus * 3.0 / 2.0;
         this.angle = Math.atan2(p.y, p.x);
 
         body = new SnakeBody(p);
@@ -24,21 +24,21 @@ public class Snake {
         return health > 0;
     }
 
-    public void update() {
+    void update() {
         health -= healthdecrement;
         if (!isAlive()) {
             body.deathAnimation();
         }
     }
 
-    public SnakeBody getBody() {
+    SnakeBody getBody() {
         return body;
     }
 
     public void eat(Food n) {
         health += n.getNutritiveValue();
-//        if (health > healthbonus * 3)
-//            health = healthbonus * 3;
+        if (health > healthbonus * 3)
+            health = healthbonus * 3;
         body.addSegment();
     }
 
@@ -46,7 +46,7 @@ public class Snake {
         return health;
     }
 
-    public int getLength() {
+    int getLength() {
         return body.getSegments().size();
     }
 
