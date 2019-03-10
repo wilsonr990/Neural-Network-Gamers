@@ -15,9 +15,10 @@ public class MainWindow{
 	 */
 	private MainWindow() {
 		EngineUI ui = new EngineUI();
+		Game snakeGame = new SnakeGame(ui.getWidth(), ui.getHeight());
 
-		Game snakeGame = new SnakeGame();
 		EngineLoop loop = new EngineLoop(snakeGame, ui);
+		ui.init(loop);
 		loop.start();
 	}
 

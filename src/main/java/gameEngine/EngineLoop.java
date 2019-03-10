@@ -4,7 +4,6 @@ import gameEngine.view.EngineUI;
 import games.Game;
 import games.snake.SnakeGame;
 import genetics.DNA;
-import helpers.KeyboardListener;
 import players.Player;
 
 import java.io.IOException;
@@ -18,7 +17,6 @@ public class EngineLoop implements Runnable {
 
     // main update frequency:
     private static final long UPDATEPERIOD = 8;
-    private final KeyboardListener keyb;
     private double per = UPDATEPERIOD;
 
     // constants:
@@ -54,13 +52,8 @@ public class EngineLoop implements Runnable {
     private Game game;
 
     public EngineLoop(Game game, EngineUI ui) {
-        keyb = new KeyboardListener();
         this.game = game;
         this.ui = ui;
-        this.ui.init(this);
-
-        ((SnakeGame)game).prepare(ui.getWidth(), ui.getHeight());
-        ui.addKeyListener(keyb);
     }
 
     private void createFirstGenerationOfPlayers(int n) {
@@ -101,8 +94,31 @@ public class EngineLoop implements Runnable {
         int idx2 = (int) (Math.random() * matingpool.size());
         DNA parentA = matingpool.get(idx1).dna;
         DNA parentB = matingpool.get(idx2).dna;
-//        Player p = new Player(bestDna.crossoverBytewise(parentB, mutationrate), game);
-        Player p = new Player(parentA.crossoverBytewise(parentB, mutationrate));
+
+        Player p;
+        double random0 = Math.random();
+        if (random0 < 0.2) {
+            double random = Math.random();
+            if (random < 0.3)
+                p = new Player(parentA.crossoverBytewise(bestDna, mutationrate));
+            else if (random < 0.6)
+                p = new Player(parentA.crossover(bestDna, mutationrate));
+            else if (random < 0.9)
+                p = new Player(parentA.crossover(bestDna, mutationrate));
+            else
+                p = new Player(bestDna);
+        }
+        else{
+            double random = Math.random();
+            if (random < 0.3)
+                p = new Player(parentA.crossoverBytewise(parentB, mutationrate));
+            else if (random < 0.6)
+                p = new Player(parentA.crossover(parentB, mutationrate));
+            else if (random < 0.9)
+                p = new Player(parentA.crossover(parentB, mutationrate));
+            else
+                p = new Player(parentA.crossover(new Player(null).dna, mutationrate));
+        }
         players.add(p);
         game.addPlayer(p);
     }
@@ -119,9 +135,8 @@ public class EngineLoop implements Runnable {
                 synchronized (players) { // protect read
                     long currentTime = System.currentTimeMillis();
                     // Controls
-                    char keyCode = (char) keyb.getKey();
-                    switch (keyCode) {
-                        case ' ': // space
+                    switch (ui.getActionControl()) {
+                        case TEST_ONE: // space
                             if (!singleSnakeModeActive) {
                                 singleSnakeModeActive = true;
                                 displayStatisticsActive = false;
@@ -134,17 +149,19 @@ public class EngineLoop implements Runnable {
                                 game.addPlayer(p);
                             }
                             break;
-                        case 'A': // a = pause
+                        case PAUSE: // a = pause
                             simulationPaused = true;
                             break;
-                        case 'B': // b = resume
+                        case RESUME: // b = resume
                             simulationPaused = false;
                             break;
-                        case 'C': // c = show stats
+                        case SHOW_STATS: // c = show stats
                             displayStatisticsActive = true;
                             break;
-                        case 'D': // d = hide stats
+                        case HIDE_STATS: // d = hide stats
                             displayStatisticsActive = false;
+                            break;
+                        case NONE:
                             break;
                     }
                     // initilize first generation:
@@ -159,7 +176,7 @@ public class EngineLoop implements Runnable {
                             if (clock - statisticsLastMillis > 1000 && !singleSnakeModeActive) {
                                 fitnessTimeline.addLast(currentMaxFitness);
                                 currentMaxFitness = 0;
-                                if (fitnessTimeline.size() >= ui.getWidth() / 2) {
+                                if (fitnessTimeline.size() >= game.getWidth() / 2) {
                                     fitnessTimeline.removeFirst();
                                 }
                                 statisticsLastMillis = clock;
@@ -187,7 +204,7 @@ public class EngineLoop implements Runnable {
                             players.clear();
                             players.addAll(backupPlayers);
                             game.reset();
-                            for(Player p: backupPlayers)
+                            for (Player p : backupPlayers)
                                 game.addPlayer(p);
 
                         } else {

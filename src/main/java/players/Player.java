@@ -101,6 +101,7 @@ public class Player {
         }
         age += .1;
         double slowdown = 49d / (48d + snakeSegments.size());
+//        double slowdown = 1;
         PhysicalCircle head = snakeSegments.get(0);
         // calculate neural net
         double angleIncrement = brain(game);

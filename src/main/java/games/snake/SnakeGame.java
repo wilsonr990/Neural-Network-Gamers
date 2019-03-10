@@ -21,14 +21,13 @@ public class SnakeGame implements Game {
     // TODO: Just for now player-game interface will be here but it should be moved
     private Map<Snake, Player> snakes = new HashMap<Snake, Player>();
 
-    public SnakeGame() {
-        height = 200;
-        width = 300;
-    }
-
-    public void prepare(int w, int h) {
+    public SnakeGame(int w, int h){
         this.width = w;
         this.height = h;
+        prepare();
+    }
+
+    private void prepare() {
         createNibbles(numNibbles);
         createWalls();
     }
@@ -133,11 +132,11 @@ public class SnakeGame implements Game {
         createWalls();
     }
 
-    public double getWidth() {
+    public int getWidth() {
         return width;
     }
 
-    public double getHeight() {
+    public int getHeight() {
         return height;
     }
 

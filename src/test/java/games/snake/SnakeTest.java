@@ -29,7 +29,7 @@ public class SnakeTest {
         Assert.assertEquals(25, snake.getHealth(), 0.1);
         Assert.assertEquals(2, snake.getLength());
 
-        for (int i = 0; i < 30 / 10; i++) snake.eat(n);
+        for (int i = 0; i < 3; i++) snake.eat(n);
         Assert.assertTrue(snake.isAlive());
         Assert.assertEquals(30, snake.getHealth(), 0.1);
         Assert.assertEquals(5, snake.getLength());

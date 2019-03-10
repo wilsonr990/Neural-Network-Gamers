@@ -10,8 +10,8 @@ public interface Game {
     void reset();
     void update(int width, int height);
     LinkedList<Drawable> getDrawables();
-    double getWidth();
-    double getHeight();
+    int getWidth();
+    int getHeight();
     void addPlayer(Player player);
     void removePlayer(Player p);
 }
