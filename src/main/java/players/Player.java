@@ -23,9 +23,9 @@ public class Player {
     private static final double maximumSightDistance = 300;
     private static final double fieldOfView = Math.PI * 2 / 3;
     // neural net constants:
-    private static final int FOVDIVISIONS = 8;
-    private static final int FIRSTSTAGESIZE = FOVDIVISIONS * 2 * 3;
-    private static final int[] stageSizes = new int[]{FIRSTSTAGESIZE, 16, 16, 2};
+    private static final int FOV_DIVISIONS = 8;
+    private static final int FIRST_STAGE_SIZE = FOV_DIVISIONS * 2 * 3;
+    private static final int[] stageSizes = new int[]{FIRST_STAGE_SIZE, 16, 16, 2};
     private static final boolean isNNSymmetric = false;
 
     // scoring constants:
@@ -35,7 +35,7 @@ public class Player {
     // misc:
     private boolean snakeInertia = false;
     // basic snake attributes:
-    private ArrayList<PhysicalCircle> snakeSegments = new ArrayList<PhysicalCircle>(100);
+    private ArrayList<PhysicalCircle> snakeSegments = new ArrayList<>(100);
     public DNA dna;
     public NeuralNet brainNet;
     private double age = 0;
@@ -54,9 +54,9 @@ public class Player {
      */
 
     public Player(DNA dna) {
-        int dnalength = NeuralNet.calcNumberOfCoeffs(stageSizes, isNNSymmetric) + 1;
+        int dnaLength = NeuralNet.calcNumberOfCoeffs(stageSizes, isNNSymmetric) + 1;
         if (dna == null) {
-            this.dna = new DNA(false, dnalength);
+            this.dna = new DNA(false, dnaLength);
         } else {
             this.dna = dna;
         }
@@ -156,7 +156,7 @@ public class Player {
             }
         }
         // Check eaten nibbles:
-        LinkedList<Nibble> nibblesToRemove = new LinkedList<Nibble>();
+        LinkedList<Nibble> nibblesToRemove = new LinkedList<>();
         int nibbleEatCount = 0;
         for (Nibble nibble : game.getNibbles()) {
             if (head.isColliding(nibble, -10)) {
@@ -212,8 +212,8 @@ public class Player {
      */
     public double brain(SnakeGame game) {
         // init input vector:
-        Thing[] input = new Thing[FOVDIVISIONS * 2];
-        for (int i = 0; i < FOVDIVISIONS * 2; i++)
+        Thing[] input = new Thing[FOV_DIVISIONS * 2];
+        for (int i = 0; i < FOV_DIVISIONS * 2; i++)
             input[i] = new Thing();
         // nibbles:
         updateVisualInput(input, game.getNibbles(), 2);
@@ -226,8 +226,8 @@ public class Player {
 		 * PhysicalCirle objects to apply the same algorithm When someone comes
 		 * up with a better algorithm, please let me know :)
 		 */
-        int step = (int) (maximumSightDistance * Math.sin(fieldOfView / (FOVDIVISIONS * 1d))) / 20;
-        LinkedList<PhysicalCircle> walls = new LinkedList<PhysicalCircle>();
+        int step = (int) (maximumSightDistance * Math.sin(fieldOfView / (FOV_DIVISIONS * 1d))) / 20;
+        LinkedList<PhysicalCircle> walls = new LinkedList<>();
         for (int x = 0; x < game.getWidth(); x += step) {
             walls.add(new PhysicalCircle(x, 0, 1));
             walls.add(new PhysicalCircle(x, game.getHeight(), 1));
@@ -239,18 +239,18 @@ public class Player {
         updateVisualInput(input, walls, 0);
 
         // convert to input vector for neural net
-        double[] stageA = new double[FIRSTSTAGESIZE]; // zeros initialized ;)
+        double[] stageA = new double[FIRST_STAGE_SIZE]; // zeros initialized ;)
         if (isNNSymmetric) {
-            for (int i = 0; i < FOVDIVISIONS; i++) {
-                stageA[input[i].type * FOVDIVISIONS + i] = Stage.signalMultiplier * (maximumSightDistance - input[i].distance) / maximumSightDistance;
-                stageA[FIRSTSTAGESIZE - 1 - (input[i + FOVDIVISIONS].type * FOVDIVISIONS + i)] = Stage.signalMultiplier
-                        * (maximumSightDistance - input[i + FOVDIVISIONS].distance) / maximumSightDistance;
+            for (int i = 0; i < FOV_DIVISIONS; i++) {
+                stageA[input[i].type * FOV_DIVISIONS + i] = Stage.signalMultiplier * (maximumSightDistance - input[i].distance) / maximumSightDistance;
+                stageA[FIRST_STAGE_SIZE - 1 - (input[i + FOV_DIVISIONS].type * FOV_DIVISIONS + i)] = Stage.signalMultiplier
+                        * (maximumSightDistance - input[i + FOV_DIVISIONS].distance) / maximumSightDistance;
             }
         } else {
-            for (int i = 0; i < FOVDIVISIONS; i++) {
-                stageA[input[i].type * FOVDIVISIONS * 2 + i] = Stage.signalMultiplier * (maximumSightDistance - input[i].distance) / maximumSightDistance;
-                stageA[input[i + FOVDIVISIONS].type * FOVDIVISIONS * 2 + FOVDIVISIONS * 2 - 1 - i] = Stage.signalMultiplier
-                        * (maximumSightDistance - input[i + FOVDIVISIONS].distance) / maximumSightDistance;
+            for (int i = 0; i < FOV_DIVISIONS; i++) {
+                stageA[input[i].type * FOV_DIVISIONS * 2 + i] = Stage.signalMultiplier * (maximumSightDistance - input[i].distance) / maximumSightDistance;
+                stageA[input[i + FOV_DIVISIONS].type * FOV_DIVISIONS * 2 + FOV_DIVISIONS * 2 - 1 - i] = Stage.signalMultiplier
+                        * (maximumSightDistance - input[i + FOV_DIVISIONS].distance) / maximumSightDistance;
             }
         }
         double[] output = brainNet.calc(stageA);
@@ -283,14 +283,14 @@ public class Player {
             double a = DoubleMath.signedDoubleModulo(head.getAngleTo(n) - angle, Math.PI * 2);
             double d = head.getDistanceTo(n);
             if (a >= 0 && a < fieldOfView) {
-                if (d < input[(int) (a * FOVDIVISIONS / fieldOfView)].distance) {
-                    input[(int) (a * FOVDIVISIONS / fieldOfView)].distance = d;
-                    input[(int) (a * FOVDIVISIONS / fieldOfView)].type = type;
+                if (d < input[(int) (a * FOV_DIVISIONS / fieldOfView)].distance) {
+                    input[(int) (a * FOV_DIVISIONS / fieldOfView)].distance = d;
+                    input[(int) (a * FOV_DIVISIONS / fieldOfView)].type = type;
                 }
             } else if (a <= 0 && -a < fieldOfView) {
-                if (d < input[(int) (-a * FOVDIVISIONS / fieldOfView) + FOVDIVISIONS].distance) {
-                    input[(int) (-a * FOVDIVISIONS / fieldOfView) + FOVDIVISIONS].distance = d;
-                    input[(int) (-a * FOVDIVISIONS / fieldOfView) + FOVDIVISIONS].type = type;
+                if (d < input[(int) (-a * FOV_DIVISIONS / fieldOfView) + FOV_DIVISIONS].distance) {
+                    input[(int) (-a * FOV_DIVISIONS / fieldOfView) + FOV_DIVISIONS].distance = d;
+                    input[(int) (-a * FOV_DIVISIONS / fieldOfView) + FOV_DIVISIONS].type = type;
                 }
             }
         }

@@ -1,24 +1,20 @@
 package gameEngine.view;
 
-import gameEngine.EngineLoop;
+import gameEngine.ModelContainer;
+import gameEngine.commands.Command;
 import helpers.KeyboardListener;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Map;
 
 public class EngineUI extends JFrame{
-    public enum ActionControl{
-        TEST_ONE,
-        PAUSE,
-        RESUME,
-        SHOW_STATS,
-        HIDE_STATS,
-        NONE
-    }
+    private KeyboardListener keyb = new KeyboardListener();
+    private Map<Command.Type, Command> commands;
 
-    KeyboardListener keyb = new KeyboardListener();
+    public EngineUI(Map<Command.Type, Command> commands){
+        this.commands = commands;
 
-    public EngineUI(){
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setSize( 1000, 600);
         setTitle("Neural Net and Genetic Algorithm");
@@ -26,27 +22,31 @@ public class EngineUI extends JFrame{
         addKeyListener(keyb);
     }
 
-    public void init(EngineLoop engineLoop){
-        Component mainComponent = new MainComponent(engineLoop, engineLoop.getGame());
+    public void init(ModelContainer modelContainer){
+        Component mainComponent = new MainComponent(modelContainer, modelContainer.getGame());
         add(mainComponent);
         setVisible(true);
     }
 
-    public ActionControl getActionControl() {
+    public void controlEvents() {
         char keyCode = (char) keyb.getKey();
         switch (keyCode) {
             case ' ': // space
-                return ActionControl.TEST_ONE;
+                commands.get(Command.Type.TEST_ONE).execute();
+                break;
             case 'A': // a = pause
-                return ActionControl.PAUSE;
+                commands.get(Command.Type.PAUSE).execute();
+                break;
             case 'B': // b = resume
-                return ActionControl.RESUME;
+                commands.get(Command.Type.PAUSE).unExecute();
+                break;
             case 'C': // c = show stats
-                return ActionControl.SHOW_STATS;
+                commands.get(Command.Type.SHOW_STATS).execute();
+                break;
             case 'D': // d = hide stats
-                return ActionControl.HIDE_STATS;
+                commands.get(Command.Type.SHOW_STATS).unExecute();
+                break;
             default:
-                return ActionControl.NONE;
         }
     }
 }

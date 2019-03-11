@@ -1,6 +1,6 @@
 package games.snake;
 
-import gameEngine.EngineLoop;
+import gameEngine.ModelContainer;
 import games.Game;
 import games.GameInterface;
 import games.uiTemplates.Nibble;
@@ -21,13 +21,9 @@ public class SnakeGame implements Game {
     // TODO: Just for now player-game interface will be here but it should be moved
     private Map<Snake, Player> snakes = new HashMap<Snake, Player>();
 
-    public SnakeGame(int w, int h){
+    public void prepare(int w, int h){
         this.width = w;
         this.height = h;
-        prepare();
-    }
-
-    private void prepare() {
         createNibbles(numNibbles);
         createWalls();
     }
@@ -41,7 +37,7 @@ public class SnakeGame implements Game {
 
     public void createNibbles(int n) {
         for (int i = 0; i < n; i++) {
-            Nibble nibble = new Nibble(0, 0, EngineLoop.globalCircleRadius);
+            Nibble nibble = new Nibble(0, 0, ModelContainer.globalCircleRadius);
             nibble.x = Math.random() * (width - 2 * nibble.rad) + nibble.rad;
             nibble.y = Math.random() * (height - 2 * nibble.rad) + nibble.rad;
 
@@ -73,9 +69,9 @@ public class SnakeGame implements Game {
     public void addPlayer(Player player) {
         if (!snakes.containsValue(player)) {
             Random random = new Random();
-            int x = (int) (random.nextDouble() * (getWidth() - 2 * EngineLoop.globalCircleRadius) + EngineLoop.globalCircleRadius);
+            int x = (int) (random.nextDouble() * (getWidth() - 2 * ModelContainer.globalCircleRadius) + ModelContainer.globalCircleRadius);
             random.setSeed(random.nextLong());
-            int y = (int) (random.nextDouble() * (getHeight() - 2 * EngineLoop.globalCircleRadius) + EngineLoop.globalCircleRadius);
+            int y = (int) (random.nextDouble() * (getHeight() - 2 * ModelContainer.globalCircleRadius) + ModelContainer.globalCircleRadius);
             Snake snake = new Snake(new Point(x, y));
             snakes.put(snake, player);
 

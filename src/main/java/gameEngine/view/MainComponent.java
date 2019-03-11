@@ -1,17 +1,17 @@
 package gameEngine.view;
 
-import gameEngine.EngineLoop;
+import gameEngine.ModelContainer;
 import games.Game;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class MainComponent extends JComponent{
-    private EngineLoop engineLoop;  //TODO: delete this dependency
+    private ModelContainer engineLoop;  //TODO: delete this dependency
     private Game game;  //TODO: delete this dependency
 
-    MainComponent(EngineLoop engineLoop, Game game) {
-        this.engineLoop = engineLoop;
+    MainComponent(ModelContainer modelContainer, Game game) {
+        this.engineLoop = modelContainer;
         this.game = game;
     }
 
@@ -29,7 +29,7 @@ public class MainComponent extends JComponent{
 
             g.drawString("g = " + (int) engineLoop.currentGeneration, 20, 205);
             g.setFont(new Font("Arial", Font.PLAIN, 32));
-            g.drawString("Mut. Prob.: " + String.format("%1$,.3f", EngineLoop.mutationrate), 20, 305);
+            g.drawString("Mut. Prob.: " + String.format("%1$,.3f", ModelContainer.mutationRate), 20, 305);
             g.drawString("Max fitness: " + (int) engineLoop.currentMaxFitness, 20, 355);
             g.drawString("Best fitness: " + (int) engineLoop.bestscore, 20, 405);
 

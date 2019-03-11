@@ -66,7 +66,6 @@ public class Snake {
         return body.isVisible();
     }
 
-    @Deprecated
     public void doDamage(int i) {
         health -= i;
     }

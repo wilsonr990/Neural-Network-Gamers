@@ -1,6 +1,6 @@
 package games.snake;
 
-import gameEngine.EngineLoop;
+import gameEngine.ModelContainer;
 import games.uiTemplates.Drawable;
 import helpers.PhysicalCircle;
 
@@ -14,7 +14,7 @@ public class SnakeBody implements Drawable {
     private float hue;
 
     SnakeBody(Point p) {
-        snakeSegments.add(new PhysicalCircle(p.x, p.y, EngineLoop.globalCircleRadius));
+        snakeSegments.add(new PhysicalCircle(p.x, p.y, ModelContainer.globalCircleRadius));
     }
 
     public void draw(Graphics g) {
@@ -54,7 +54,7 @@ public class SnakeBody implements Drawable {
     }
 
     void addSegment() {
-        snakeSegments.add(new PhysicalCircle(snakeSegments.get(snakeSegments.size() - 1).x, snakeSegments.get(snakeSegments.size() - 1).y, EngineLoop.globalCircleRadius));
+        snakeSegments.add(new PhysicalCircle(snakeSegments.get(snakeSegments.size() - 1).x, snakeSegments.get(snakeSegments.size() - 1).y, ModelContainer.globalCircleRadius));
     }
 
     ArrayList<PhysicalCircle> getSegments() {

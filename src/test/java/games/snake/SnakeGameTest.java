@@ -12,7 +12,8 @@ import java.util.Set;
 public class SnakeGameTest {
     @Test
     public void gameStartsWithFourNibblesAndNoSnakes() {
-        SnakeGame game = new SnakeGame(100,100);
+        SnakeGame game = new SnakeGame();
+        game.prepare(100,100);
 
         // just created
         LinkedList<Nibble> nibbles = game.getNibbles();
@@ -31,7 +32,8 @@ public class SnakeGameTest {
 
     @Test
     public void addingPlayersToGame() {
-        SnakeGame game = new SnakeGame(100,100);
+        SnakeGame game = new SnakeGame();
+        game.prepare(100,100);
 
         // adding a Player creates a snake in the game
         Player player = new Player(null);
