@@ -105,7 +105,7 @@ public class ModelContainer implements PauseCommand.Pausable, ShowCommand.Showab
             else if (random < 0.6)
                 p = new Player(parentA.crossover(bestDna, mutationRate));
             else if (random < 0.9)
-                p = new Player(parentA.crossover(bestDna, mutationRate));
+                p = new Player(parentA.crossoverNoise(bestDna, mutationRate));
             else
                 p = new Player(bestDna);
         } else {
@@ -115,9 +115,9 @@ public class ModelContainer implements PauseCommand.Pausable, ShowCommand.Showab
             else if (random < 0.6)
                 p = new Player(parentA.crossover(parentB, mutationRate));
             else if (random < 0.9)
-                p = new Player(parentA.crossover(parentB, mutationRate));
+                p = new Player(parentA.crossoverNoise(parentB, mutationRate));
             else
-                p = new Player(parentA.crossover(new Player(null).dna, mutationRate));
+                p = new Player(null);
         }
         players.add(p);
         game.addPlayer(p);
@@ -171,6 +171,7 @@ public class ModelContainer implements PauseCommand.Pausable, ShowCommand.Showab
                     bestDna = p.dna;
                     try {
                         bestDna.saveToFile((int) bestscore);
+                        bestDna.saveToFile(0);
                     } catch (IOException e) {
                         System.out.println("Failed saving adn to file!");
                     }

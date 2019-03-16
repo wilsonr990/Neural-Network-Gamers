@@ -124,7 +124,7 @@ public class DNA {
     }
 
     public void saveToFile(int bestscore) throws IOException {
-        FileOutputStream fos = new FileOutputStream(String.valueOf(bestscore) + ".out");
+        FileOutputStream fos = new FileOutputStream(bestscore==0?"best.out":bestscore + ".out");
         fos.write(data, 0, data.length);
         fos.flush();
         fos.close();
